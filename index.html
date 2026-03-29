@@ -26,12 +26,11 @@
         .container { max-width: 500px; margin: 0 auto; padding: 15px 15px 100px; }
         .product-card { background: #fff; margin-bottom: 40px; border-bottom: 1px solid #eee; }
         
-        /* 轮播图区域 */
         .swiper { width: 100%; aspect-ratio: 1/1; background: var(--bg-gray); position: relative; }
         .swiper-slide img { width: 100%; height: 100%; object-fit: contain; }
         .swiper-pagination-bullet-active { background: #000 !important; }
 
-        /* 图片计数器 (显示 1/5, 2/5) - 美国客户很吃这一套，显得专业 */
+        /* 图片数字指示器 */
         .img-counter { 
             position: absolute; bottom: 15px; right: 15px; background: rgba(0,0,0,0.6); 
             color: #fff; padding: 3px 10px; border-radius: 12px; font-size: 11px; z-index: 10; 
@@ -56,12 +55,12 @@
 <div class="sticky-header">
     <div class="header"><h1>LJR SNEAKERS</h1></div>
     <div class="search-container">
-        <input type="text" id="search-input" placeholder="Search sneakers (e.g. Panda, AJ1)...">
+        <input type="text" id="search-input" placeholder="Search (e.g. Panda, Jordan)...">
     </div>
     <div class="category-nav">
-        <div class="nav-item active" data-cat="All">All</div>
-        <div class="nav-item" data-cat="Dunk">Dunk</div>
-        <div class="nav-item" data-cat="Jordan">Air Jordan</div>
+        <div class="nav-item active" onclick="filterCat('All', this)">All</div>
+        <div class="nav-item" onclick="filterCat('Dunk', this)">Dunk</div>
+        <div class="nav-item" onclick="filterCat('Jordan', this)">Air Jordan</div>
     </div>
 </div>
 
@@ -75,19 +74,17 @@
     const myPhone = "8618506001902";
     const shopName = "LJR";
 
-    // 【操作说明】：你只需要在这里增加图片路径，代码会自动判断展示多少张！
+    // 注意：images 数组里写几个路径，网页就只显示几个位置，不循环，不错位
     const products = [
         {
             name: "Nike Dunk Low 'Panda' Black White",
             price: "$110.00",
             category: "Dunk",
-            // 这里你可以放任意数量的图片，代码会自动渲染
             images: [
                 "images/dunk-panda/1.jpg",
                 "images/dunk-panda/2.jpg",
                 "images/dunk-panda/3.jpg",
-                "images/dunk-panda/4.jpg",
-                "images/dunk-panda/5.jpg"
+                "images/dunk-panda/4.jpg"
             ]
         },
         {
@@ -97,7 +94,8 @@
             images: [
                 "images/jordan-chicago/1.jpg",
                 "images/jordan-chicago/2.jpg",
-                "images/jordan-chicago/3.jpg"
+                "images/jordan-chicago/3.jpg",
+                "images/jordan-chicago/4.jpg"
             ]
         }
     ];
@@ -125,12 +123,11 @@
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 
-                // 动态生成所有图片页
                 const slidesHtml = product.images.map(img => `
-                    <div class="swiper-slide"><img src="${img}" onerror="this.src='https://via.placeholder.com/500?text=Image+Coming+Soon'"></div>
+                    <div class="swiper-slide"><img src="${img}" onerror="this.src='https://via.placeholder.com/500?text=Image+Not+Found'"></div>
                 `).join('');
 
-                const waMessage = encodeURIComponent(`Hi ${shopName}, I want to order:\n${product.name}\nPrice: ${product.price}`);
+                const waMsg = encodeURIComponent(`Hi ${shopName}, I'm interested in: ${product.name}`);
                 
                 card.innerHTML = `
                     <div class="swiper swiper-${pIndex}">
@@ -141,21 +138,19 @@
                     <div class="product-info">
                         <div class="product-title">${product.name}</div>
                         <div class="product-price">${product.price}</div>
-                        <a href="https://wa.me/${myPhone}?text=${waMessage}" target="_blank" class="order-btn">ORDER ON WHATSAPP</a>
-                        <div class="features">PREMIUM BATCH • FAST US SHIPPING • FREE QC</div>
+                        <a href="https://wa.me/${myPhone}?text=${waMsg}" target="_blank" class="order-btn">ORDER VIA WHATSAPP</a>
+                        <div class="features">PREMIUM QUALITY • SHIP TO USA • FREE QC</div>
                     </div>
                 `;
                 listContainer.appendChild(card);
                 
-                // 初始化滑动，并添加数字更新逻辑
-                const swiperObj = new Swiper(`.swiper-${pIndex}`, {
-                    loop: true,
+                new Swiper(`.swiper-${pIndex}`, {
+                    loop: false, // 彻底关闭循环，防止图片位显示错误
                     pagination: { el: '.swiper-pagination', clickable: true },
                     on: {
                         slideChange: function () {
-                            // 更新那个 1/5, 2/5 的数字展示
                             const counter = this.el.querySelector('.img-counter');
-                            if(counter) counter.innerText = `${this.realIndex + 1} / ${totalImg}`;
+                            if(counter) counter.innerText = `${this.activeIndex + 1} / ${totalImg}`;
                         }
                     }
                 });
@@ -163,15 +158,12 @@
         }
     }
 
-    // 分类点击逻辑
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', function() {
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            this.classList.add('active');
-            currentCategory = this.getAttribute('data-cat');
-            renderProducts();
-        });
-    });
+    window.filterCat = (cat, el) => {
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        el.classList.add('active');
+        currentCategory = cat;
+        renderProducts();
+    };
 
     searchInput.addEventListener('input', (e) => {
         searchQuery = e.target.value;
