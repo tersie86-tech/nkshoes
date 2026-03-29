@@ -4,40 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LJR PREMIUM SNEAKERS</title>
-    <!-- 引入滑动库 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <style>
         :root { --main-color: #000; --accent-color: #e41e31; --bg-gray: #f8f8f8; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: #fff; color: #111; }
         
-        /* 顶部固定区域 */
         .sticky-header { position: sticky; top: 0; z-index: 1000; background: #fff; border-bottom: 1px solid #eee; }
-        .header { padding: 20px 0 10px; text-align: center; }
-        .header h1 { margin: 0; font-size: 24px; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; font-style: italic; }
+        .header { padding: 15px 0 5px; text-align: center; }
+        .header h1 { margin: 0; font-size: 22px; font-weight: 900; text-transform: uppercase; font-style: italic; }
         
-        /* 搜索框样式 */
         .search-container { padding: 10px 15px; }
         #search-input { 
             width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 8px; 
             font-size: 14px; outline: none; box-sizing: border-box; background: var(--bg-gray);
         }
 
-        /* 分类导航条 */
-        .category-nav { display: flex; justify-content: center; gap: 15px; padding: 10px 0 15px; border-bottom: 1px solid #eee; }
-        .nav-item { 
-            font-size: 13px; font-weight: 700; text-transform: uppercase; cursor: pointer; 
-            color: #888; transition: 0.3s; padding: 5px 10px; border-radius: 4px;
-        }
-        .nav-item.active { color: #000; background: #f0f0f0; }
+        .category-nav { display: flex; justify-content: center; gap: 10px; padding: 5px 0 15px; border-bottom: 1px solid #eee; }
+        .nav-item { font-size: 12px; font-weight: 700; text-transform: uppercase; cursor: pointer; color: #888; padding: 6px 12px; border-radius: 20px; transition: 0.3s; }
+        .nav-item.active { color: #fff; background: #000; }
 
-        /* 内容区域 */
         .container { max-width: 500px; margin: 0 auto; padding: 15px 15px 100px; }
-        .product-card { background: #fff; margin-bottom: 40px; border-bottom: 1px solid #eee; display: block; }
+        .product-card { background: #fff; margin-bottom: 40px; border-bottom: 1px solid #eee; }
         
-        /* 轮播图 */
-        .swiper { width: 100%; aspect-ratio: 1/1; background: var(--bg-gray); }
+        /* 轮播图区域 */
+        .swiper { width: 100%; aspect-ratio: 1/1; background: var(--bg-gray); position: relative; }
         .swiper-slide img { width: 100%; height: 100%; object-fit: contain; }
         .swiper-pagination-bullet-active { background: #000 !important; }
+
+        /* 图片计数器 (显示 1/5, 2/5) - 美国客户很吃这一套，显得专业 */
+        .img-counter { 
+            position: absolute; bottom: 15px; right: 15px; background: rgba(0,0,0,0.6); 
+            color: #fff; padding: 3px 10px; border-radius: 12px; font-size: 11px; z-index: 10; 
+        }
 
         .product-info { padding: 15px 0; text-align: left; }
         .product-title { font-size: 17px; font-weight: 700; margin-bottom: 5px; min-height: 40px; }
@@ -46,65 +44,61 @@
         .order-btn { 
             display: flex; align-items: center; justify-content: center;
             background-color: #000; color: #fff; text-decoration: none;
-            padding: 15px 0; width: 100%; font-size: 15px; font-weight: bold; 
-            border-radius: 4px; text-transform: uppercase;
+            padding: 16px 0; width: 100%; font-size: 15px; font-weight: bold; 
+            border-radius: 6px; text-transform: uppercase;
         }
-        .features { font-size: 11px; color: #999; margin-top: 10px; text-align: center; text-transform: uppercase; }
-        
-        /* 无搜索结果提示 */
-        #no-results { display: none; padding: 50px 0; color: #999; }
+        .features { font-size: 11px; color: #999; margin-top: 12px; text-align: center; }
+        #no-results { display: none; padding: 50px 0; color: #999; text-align: center; }
     </style>
 </head>
 <body>
 
 <div class="sticky-header">
-    <div class="header">
-        <h1>LJR SNEAKERS</h1>
-    </div>
-
-    <!-- 搜索功能 -->
+    <div class="header"><h1>LJR SNEAKERS</h1></div>
     <div class="search-container">
-        <input type="text" id="search-input" placeholder="Search by name (e.g. Panda, Jordan)...">
+        <input type="text" id="search-input" placeholder="Search sneakers (e.g. Panda, AJ1)...">
     </div>
-
-    <!-- 分类导航 -->
     <div class="category-nav">
-        <div class="nav-item active" onclick="filterCategory('All', this)">All</div>
-        <div class="nav-item" onclick="filterCategory('Dunk', this)">Dunk</div>
-        <div class="nav-item" onclick="filterCategory('Jordan', this)">Air Jordan</div>
+        <div class="nav-item active" data-cat="All">All</div>
+        <div class="nav-item" data-cat="Dunk">Dunk</div>
+        <div class="nav-item" data-cat="Jordan">Air Jordan</div>
     </div>
 </div>
 
 <div class="container">
     <div id="product-list"></div>
-    <div id="no-results">No sneakers found matching your search.</div>
+    <div id="no-results">No items found.</div>
 </div>
 
-<!-- 脚本部分 -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
     const myPhone = "8618506001902";
     const shopName = "LJR";
 
-    // 【商品数据配置】增加了一个 category 字段用于分类
+    // 【操作说明】：你只需要在这里增加图片路径，代码会自动判断展示多少张！
     const products = [
         {
             name: "Nike Dunk Low 'Panda' Black White",
             price: "$110.00",
             category: "Dunk",
-            images: ["images/dunk-panda/1.jpg", "images/dunk-panda/2.jpg"]
+            // 这里你可以放任意数量的图片，代码会自动渲染
+            images: [
+                "images/dunk-panda/1.jpg",
+                "images/dunk-panda/2.jpg",
+                "images/dunk-panda/3.jpg",
+                "images/dunk-panda/4.jpg",
+                "images/dunk-panda/5.jpg"
+            ]
         },
         {
             name: "Jordan 1 Retro High OG Chicago",
             price: "$150.00",
             category: "Jordan",
-            images: ["images/jordan-chicago/1.jpg", "images/jordan-chicago/2.jpg"]
-        },
-        {
-            name: "Nike Kobe 6 Protro 'Reverse Grinch'",
-            price: "$165.00",
-            category: "Other",
-            images: ["images/kobe-grinch/1.jpg"]
+            images: [
+                "images/jordan-chicago/1.jpg",
+                "images/jordan-chicago/2.jpg",
+                "images/jordan-chicago/3.jpg"
+            ]
         }
     ];
 
@@ -113,9 +107,7 @@
 
     const listContainer = document.getElementById('product-list');
     const searchInput = document.getElementById('search-input');
-    const noResults = document.getElementById('no-results');
 
-    // 核心渲染函数
     function renderProducts() {
         listContainer.innerHTML = '';
         const filtered = products.filter(p => {
@@ -125,56 +117,67 @@
         });
 
         if (filtered.length === 0) {
-            noResults.style.display = 'block';
+            document.getElementById('no-results').style.display = 'block';
         } else {
-            noResults.style.display = 'none';
-            filtered.forEach((product, index) => {
+            document.getElementById('no-results').style.display = 'none';
+            filtered.forEach((product, pIndex) => {
+                const totalImg = product.images.length;
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 
-                let slidesHtml = product.images.map(img => `
-                    <div class="swiper-slide"><img src="${img}" onerror="this.src='https://via.placeholder.com/500?text=LJR+Sneakers'"></div>
+                // 动态生成所有图片页
+                const slidesHtml = product.images.map(img => `
+                    <div class="swiper-slide"><img src="${img}" onerror="this.src='https://via.placeholder.com/500?text=Image+Coming+Soon'"></div>
                 `).join('');
 
-                const message = encodeURIComponent(`Hi ${shopName}, I'm interested in:\n${product.name}\nPrice: ${product.price}`);
+                const waMessage = encodeURIComponent(`Hi ${shopName}, I want to order:\n${product.name}\nPrice: ${product.price}`);
                 
                 card.innerHTML = `
-                    <div class="swiper swiper-${index}">
+                    <div class="swiper swiper-${pIndex}">
                         <div class="swiper-wrapper">${slidesHtml}</div>
+                        <div class="img-counter">1 / ${totalImg}</div>
                         <div class="swiper-pagination"></div>
                     </div>
                     <div class="product-info">
                         <div class="product-title">${product.name}</div>
                         <div class="product-price">${product.price}</div>
-                        <a href="https://wa.me/${myPhone}?text=${message}" target="_blank" class="order-btn">ORDER VIA WHATSAPP</a>
-                        <div class="features">Free QC • Ship to USA • Premium Batch</div>
+                        <a href="https://wa.me/${myPhone}?text=${waMessage}" target="_blank" class="order-btn">ORDER ON WHATSAPP</a>
+                        <div class="features">PREMIUM BATCH • FAST US SHIPPING • FREE QC</div>
                     </div>
                 `;
                 listContainer.appendChild(card);
                 
-                new Swiper(`.swiper-${index}`, {
+                // 初始化滑动，并添加数字更新逻辑
+                const swiperObj = new Swiper(`.swiper-${pIndex}`, {
                     loop: true,
-                    pagination: { el: '.swiper-pagination', clickable: true }
+                    pagination: { el: '.swiper-pagination', clickable: true },
+                    on: {
+                        slideChange: function () {
+                            // 更新那个 1/5, 2/5 的数字展示
+                            const counter = this.el.querySelector('.img-counter');
+                            if(counter) counter.innerText = `${this.realIndex + 1} / ${totalImg}`;
+                        }
+                    }
                 });
             });
         }
     }
 
     // 分类点击逻辑
-    window.filterCategory = (cat, el) => {
-        currentCategory = cat;
-        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-        el.classList.add('active');
-        renderProducts();
-    };
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', function() {
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
+            currentCategory = this.getAttribute('data-cat');
+            renderProducts();
+        });
+    });
 
-    // 搜索输入逻辑
     searchInput.addEventListener('input', (e) => {
         searchQuery = e.target.value;
         renderProducts();
     });
 
-    // 初始化页面
     renderProducts();
 </script>
 
