@@ -4,129 +4,178 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LJR PREMIUM SNEAKERS</title>
+    <!-- 引入滑动库 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: #ffffff; text-align: center; color: #111; overflow-x: hidden; }
-        .header { background: #fff; padding: 25px 0; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100; }
-        .header h1 { margin: 0; font-size: 26px; font-weight: 900; letter-spacing: -1.5px; text-transform: uppercase; font-style: italic; }
-        .header p { margin: 5px 0 0; font-size: 13px; color: #888; font-weight: 600; text-transform: uppercase; }
+        :root { --main-color: #000; --accent-color: #e41e31; --bg-gray: #f8f8f8; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: #fff; color: #111; }
+        
+        /* 顶部固定区域 */
+        .sticky-header { position: sticky; top: 0; z-index: 1000; background: #fff; border-bottom: 1px solid #eee; }
+        .header { padding: 20px 0 10px; text-align: center; }
+        .header h1 { margin: 0; font-size: 24px; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; font-style: italic; }
+        
+        /* 搜索框样式 */
+        .search-container { padding: 10px 15px; }
+        #search-input { 
+            width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 8px; 
+            font-size: 14px; outline: none; box-sizing: border-box; background: var(--bg-gray);
+        }
 
-        .container { max-width: 500px; margin: 20px auto; padding: 10px; padding-bottom: 100px; }
+        /* 分类导航条 */
+        .category-nav { display: flex; justify-content: center; gap: 15px; padding: 10px 0 15px; border-bottom: 1px solid #eee; }
+        .nav-item { 
+            font-size: 13px; font-weight: 700; text-transform: uppercase; cursor: pointer; 
+            color: #888; transition: 0.3s; padding: 5px 10px; border-radius: 4px;
+        }
+        .nav-item.active { color: #000; background: #f0f0f0; }
+
+        /* 内容区域 */
+        .container { max-width: 500px; margin: 0 auto; padding: 15px 15px 100px; }
+        .product-card { background: #fff; margin-bottom: 40px; border-bottom: 1px solid #eee; display: block; }
         
-        /* 轮播图卡片设计 (美国简约潮流风格) */
-        .product-card { background: #fff; border-radius: 0px; overflow: hidden; margin-bottom: 40px; border-bottom: 1px solid #f0f0f0; text-align: left; position: relative; }
-        
-        /* 设置轮播图区域大小 */
-        .swiper { width: 100%; aspect-ratio: 1/1; background: #f9f9f9; }
-        .swiper-slide { display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        /* 轮播图 */
+        .swiper { width: 100%; aspect-ratio: 1/1; background: var(--bg-gray); }
         .swiper-slide img { width: 100%; height: 100%; object-fit: contain; }
-
-        /* 轮播图小圆点颜色 (改成更符合美国潮流的纯黑) */
         .swiper-pagination-bullet-active { background: #000 !important; }
 
-        .product-info { padding: 20px 0; }
-        .product-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; color: #111; line-height: 1.2; }
-        .product-price { color: #e41e31; font-size: 22px; font-weight: 900; margin-bottom: 15px; }
+        .product-info { padding: 15px 0; text-align: left; }
+        .product-title { font-size: 17px; font-weight: 700; margin-bottom: 5px; min-height: 40px; }
+        .product-price { color: var(--accent-color); font-size: 20px; font-weight: 900; margin-bottom: 15px; }
 
         .order-btn { 
             display: flex; align-items: center; justify-content: center;
             background-color: #000; color: #fff; text-decoration: none;
-            padding: 18px 0; width: 100%; font-size: 16px; font-weight: bold; 
-            border-radius: 4px; text-transform: uppercase; transition: 0.3s;
+            padding: 15px 0; width: 100%; font-size: 15px; font-weight: bold; 
+            border-radius: 4px; text-transform: uppercase;
         }
-        .order-btn:hover { background-color: #333; }
-        .wa-icon { width: 18px; height: 18px; margin-right: 10px; fill: #fff; }
-
-        .features { font-size: 12px; color: #999; margin-top: 12px; font-weight: 500; text-align: center; }
+        .features { font-size: 11px; color: #999; margin-top: 10px; text-align: center; text-transform: uppercase; }
+        
+        /* 无搜索结果提示 */
+        #no-results { display: none; padding: 50px 0; color: #999; }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <h1>LJR SNEAKERS</h1>
-    <p>Premium Quality • Worldwide Shipping • US Market</p>
-</div>
-
-<div class="container" id="product-list">
+<div class="sticky-header">
+    <div class="header">
+        <h1>LJR SNEAKERS</h1>
     </div>
 
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"></script>
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <!-- 搜索功能 -->
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="Search by name (e.g. Panda, Jordan)...">
+    </div>
 
+    <!-- 分类导航 -->
+    <div class="category-nav">
+        <div class="nav-item active" onclick="filterCategory('All', this)">All</div>
+        <div class="nav-item" onclick="filterCategory('Dunk', this)">Dunk</div>
+        <div class="nav-item" onclick="filterCategory('Jordan', this)">Air Jordan</div>
+    </div>
+</div>
+
+<div class="container">
+    <div id="product-list"></div>
+    <div id="no-results">No sneakers found matching your search.</div>
+</div>
+
+<!-- 脚本部分 -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
-    const myPhone = "8618506001902"; // 你的 WhatsApp 号码
+    const myPhone = "8618506001902";
     const shopName = "LJR";
 
-    // 1. 【多图配置区域】
-    // 每一个双鞋子的 images 字段，都要用中括号 [] 包起来，
-    // 并在里面按顺序写上所有细节图的路径，用单引号括起来并用逗号隔开。
+    // 【商品数据配置】增加了一个 category 字段用于分类
     const products = [
         {
             name: "Nike Dunk Low 'Panda' Black White",
             price: "$110.00",
-            // 在这里放熊猫 Dunk 的所有细节图
-            images: [
-                "images/dunk-panda/1.jpg", // 主图
-                "images/dunk-panda/2.jpg", // 侧面细节
-                "images/dunk-panda/3.jpg", // 鞋底细节
-                "images/dunk-panda/4.jpg", // 鞋舌细节
-                "images/dunk-panda/5.jpg"  // 后跟细节
-            ]
+            category: "Dunk",
+            images: ["images/dunk-panda/1.jpg", "images/dunk-panda/2.jpg"]
+        },
+        {
+            name: "Jordan 1 Retro High OG Chicago",
+            price: "$150.00",
+            category: "Jordan",
+            images: ["images/jordan-chicago/1.jpg", "images/jordan-chicago/2.jpg"]
         },
         {
             name: "Nike Kobe 6 Protro 'Reverse Grinch'",
             price: "$165.00",
-            images: [
-                "images/kobe-grinch/1.jpg", // 主图
-                "images/kobe-grinch/2.jpg"  // 侧面细节
-            ]
+            category: "Other",
+            images: ["images/kobe-grinch/1.jpg"]
         }
     ];
 
+    let currentCategory = 'All';
+    let searchQuery = '';
+
     const listContainer = document.getElementById('product-list');
-    
-    products.forEach((product, index) => {
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        
-        // 2. 自动生成多图轮播结构 (Swiper Slides)
-        let slidesHtml = '';
-        product.images.forEach(imgSrc => {
-            slidesHtml += `<div class="swiper-slide"><img src="${imgSrc}" onerror="this.src='https://via.placeholder.com/500x500?text=Image+Not+Found'"></div>`;
+    const searchInput = document.getElementById('search-input');
+    const noResults = document.getElementById('no-results');
+
+    // 核心渲染函数
+    function renderProducts() {
+        listContainer.innerHTML = '';
+        const filtered = products.filter(p => {
+            const matchesCat = currentCategory === 'All' || p.category === currentCategory;
+            const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+            return matchesCat && matchesSearch;
         });
 
-        const message = encodeURIComponent(`Hi ${shopName}, I want to order:\n\nItem: ${product.name}\nPrice: ${product.price}\n\nPlease check the stock.`);
-        const waLink = `https://wa.me/${myPhone}?text=${message}`;
+        if (filtered.length === 0) {
+            noResults.style.display = 'block';
+        } else {
+            noResults.style.display = 'none';
+            filtered.forEach((product, index) => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                
+                let slidesHtml = product.images.map(img => `
+                    <div class="swiper-slide"><img src="${img}" onerror="this.src='https://via.placeholder.com/500?text=LJR+Sneakers'"></div>
+                `).join('');
 
-        card.innerHTML = `
-            <div class="swiper mySwiper-${index}">
-                <div class="swiper-wrapper">
-                    ${slidesHtml}
-                </div>
-                <div class="swiper-pagination"></div>
-            </div>
-            
-            <div class="product-info">
-                <div class="product-title">${product.name}</div>
-                <div class="product-price">${product.price}</div>
-                <a href="${waLink}" target="_blank" class="order-btn">
-                    <svg class="wa-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-115.9zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-5.5-2.8-23.4-8.6-44.6-27.6-16.5-14.7-27.6-32.8-30.8-38.3-3.2-5.5-.3-8.5 2.5-11.2 2.5-2.6 5.5-6.5 8.3-9.7 2.8-3.3 3.7-5.5 5.5-9.3 1.9-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 13.2 5.8 23.5 9.2 31.6 11.8 13.3 4.2 25.4 3.6 35 2.2 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
-                    ORDER ON WHATSAPP
-                </a>
-                <div class="features">✓ Top Tier Quality • ✓ Shipping to USA • ✓ Free QC Photos</div>
-            </div>
-        `;
-        listContainer.appendChild(card);
-        
-        // 3. 激活每一个卡片的滑动功能
-        new Swiper(`.mySwiper-${index}`, {
-            loop: true, // 循环滑动
-            pagination: {
-                el: '.swiper-pagination', // 激活小圆点
-                clickable: true, // 小圆点可点击
-            },
-        });
+                const message = encodeURIComponent(`Hi ${shopName}, I'm interested in:\n${product.name}\nPrice: ${product.price}`);
+                
+                card.innerHTML = `
+                    <div class="swiper swiper-${index}">
+                        <div class="swiper-wrapper">${slidesHtml}</div>
+                        <div class="swiper-pagination"></div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-title">${product.name}</div>
+                        <div class="product-price">${product.price}</div>
+                        <a href="https://wa.me/${myPhone}?text=${message}" target="_blank" class="order-btn">ORDER VIA WHATSAPP</a>
+                        <div class="features">Free QC • Ship to USA • Premium Batch</div>
+                    </div>
+                `;
+                listContainer.appendChild(card);
+                
+                new Swiper(`.swiper-${index}`, {
+                    loop: true,
+                    pagination: { el: '.swiper-pagination', clickable: true }
+                });
+            });
+        }
+    }
+
+    // 分类点击逻辑
+    window.filterCategory = (cat, el) => {
+        currentCategory = cat;
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        el.classList.add('active');
+        renderProducts();
+    };
+
+    // 搜索输入逻辑
+    searchInput.addEventListener('input', (e) => {
+        searchQuery = e.target.value;
+        renderProducts();
     });
+
+    // 初始化页面
+    renderProducts();
 </script>
 
 </body>
