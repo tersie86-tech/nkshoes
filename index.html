@@ -2,143 +2,96 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LJR - Premium Catalog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LJR PREMIUM SNEAKERS</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #f7f7f7; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        .phone-wrapper { width: 100%; max-width: 500px; margin: 0 auto; background: #fff; min-height: 100vh; padding-bottom: 80px; }
-
-        header { padding: 20px; text-align: center; border-bottom: 1px solid #eee; position: sticky; top: 0; background: #fff; z-index: 100; }
-        .logo { font-size: 24px; font-weight: 900; font-style: italic; letter-spacing: -1px; }
-
-        /* 商品列表 */
-        .container { display: flex; flex-wrap: wrap; padding: 6px; }
-        .product-card { width: 50%; padding: 6px; cursor: pointer; }
-        .card-inner { border: 1px solid #efefef; border-radius: 12px; overflow: hidden; background: #fff; }
-        .img-box { width: 100%; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; background: #fff; }
-        .img-box img { width: 95%; height: 95%; object-fit: contain; }
-        .info { padding: 12px; text-align: center; }
-        .info h3 { font-size: 11px; height: 32px; overflow: hidden; margin-bottom: 6px; color: #333; line-height: 1.3; }
-        .price { color: #d0021b; font-weight: 800; font-size: 16px; }
-
-        /* 详情弹窗 */
-        #detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 1000; display: none; flex-direction: column; overflow-y: auto; }
-        .close-bar { position: sticky; top: 0; background: rgba(255,255,255,0.9); padding: 15px; border-bottom: 1px solid #eee; z-index: 1001; }
-        .back-btn { background: #000; color: #fff; border: none; padding: 8px 18px; border-radius: 20px; font-weight: bold; cursor: pointer; }
+        /* 针对美国市场的现代简约风格 */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: #f9f9f9; text-align: center; color: #111; }
         
-        .detail-content { width: 100%; max-width: 500px; margin: 0 auto; }
-        .detail-img { width: 100%; display: block; margin-bottom: 2px; }
-        .detail-desc { padding: 20px; text-align: left; }
-        .detail-desc h2 { font-size: 18px; margin-bottom: 10px; font-weight: 800; }
+        .header { background: #fff; padding: 25px 0; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100; }
+        .header h1 { margin: 0; font-size: 26px; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; font-style: italic; }
+        .header p { margin: 5px 0 0; font-size: 14px; color: #666; font-weight: 500; }
+
+        .container { max-width: 600px; margin: 20px auto; padding: 10px; padding-bottom: 80px; }
         
-        /* WhatsApp 按钮 */
-        .whatsapp-btn { 
+        .product-card { background: #fff; border-radius: 16px; overflow: hidden; margin-bottom: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #f0f0f0; text-align: left; }
+        .product-card img { width: 100%; display: block; aspect-ratio: 1/1; object-fit: contain; background: #fff; padding: 10px; }
+        
+        .product-info { padding: 20px; border-top: 1px solid #eee; }
+        .product-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: #111; line-height: 1.3; }
+        .product-price { color: #e41e31; font-size: 24px; font-weight: 900; }
+        .product-meta { font-size: 12px; color: #888; margin-top: 5px; text-transform: uppercase; font-weight: 600; }
+
+        /* 底部固定购买按钮 */
+        .order-btn { 
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background-color: #000; color: white; border: none; 
+            padding: 18px 0; width: 90%; max-width: 500px; 
+            font-size: 16px; font-weight: bold; text-align: center;
+            cursor: pointer; transition: 0.3s; border-radius: 50px;
             display: flex; align-items: center; justify-content: center;
-            background: #25d366; color: #fff; text-decoration: none;
-            padding: 15px; border-radius: 10px; font-weight: 800; 
-            margin-top: 20px; border: none; width: 100%; cursor: pointer;
-            box-shadow: 0 4px 12px rgba(37,211,102,0.3);
+            text-decoration: none; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 999; text-transform: uppercase;
         }
-        .whatsapp-btn:active { transform: scale(0.98); background: #1ebe57; }
-
-        footer { position: fixed; bottom: 0; width: 100%; max-width: 500px; background: #fff; padding: 15px; border-top: 1px solid #eee; text-align: center; }
-        .contact-footer { color: #25d366; font-weight: bold; text-decoration: none; font-size: 14px; }
+        .order-btn:hover { background-color: #333; transform: translateX(-50%) translateY(-2px); }
+        .order-btn:active { transform: translateX(-50%) translateY(1px); }
+        .wa-icon { width: 20px; height: 20px; margin-right: 10px; fill: #fff; }
     </style>
 </head>
 <body>
 
-<div class="phone-wrapper">
-    <header><div class="logo">KICK12 NIKE</div></header>
-    <div class="container" id="product-list"></div>
-    <footer>
-        <a href="https://wa.me/你的电话" class="contact-footer">Direct Message WhatsApp</a>
-    </footer>
+<div class="header">
+    <h1>LJR SNEAKERS</h1>
+    <p>Premium Quality | Direct Shipping</p>
 </div>
 
-<!-- 详情弹窗层 -->
-<div id="detail-overlay">
-    <div class="close-bar">
-        <button class="back-btn" onclick="closeDetails()">← Back to List</button>
+<div class="container" id="product-list">
     </div>
-    <div class="detail-content" id="detail-content"></div>
-    <div class="detail-desc" id="detail-text"></div>
-    <div style="height: 50px;"></div>
-</div>
 
 <script>
-    // 1. 【配置你的 WhatsApp】
-    // 格式：国家代码+号码，不要加号。例如越南 84123456789
-    const myPhone = "84123456789"; 
+    // 1. WhatsApp 配置 (纯数字)
+    const myPhone = "8618506001902";
+    const shopName = "LJR";
 
-    // 2. 【核心数据库】
+    // 2. 商品列表 (在这里增加或修改鞋子)
     const products = [
-        { 
-            name: "Nike Dunk Low 'Panda' Black White", 
+        {
+            name: "Nike Dunk Low 'Panda' Black White",
             price: "$110.00",
-            main: "dunk-panda/thumb.jpg", 
-            details: ["dunk-panda/1.jpg", "dunk-panda/2.jpg", "dunk-panda/3.jpg"] 
+            image: "images/dunk-panda/1.jpg" // 确保路径正确
         },
-        { 
-            name: "Nike Kobe 6 Protro 'Reverse Grinch'", 
-            price: "$165.00",
-            main: "kobe-grinch/thumb.jpg", 
-            details: ["kobe-grinch/1.jpg", "kobe-grinch/2.jpg"]
-        }
-        // 继续添加...
+        {
+            name: "Jordan 1 Retro High OG Chicago Lost and Found",
+            price: "$150.00",
+            image: "images/jordan-chicago/1.jpg"
+        },
+        // 继续在这里添加...
     ];
 
-    // 渲染首页列表
     const listContainer = document.getElementById('product-list');
-    products.forEach((p, index) => {
-        listContainer.innerHTML += `
-            <div class="product-card" onclick="showDetails(${index})">
-                <div class="card-inner">
-                    <div class="img-box"><img src="images/${p.main}"></div>
-                    <div class="info">
-                        <h3>${p.name}</h3>
-                        <div class="price">${p.price}</div>
-                    </div>
-                </div>
+    
+    products.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        
+        // 编码英文消息文案 (适合美国市场)
+        const message = encodeURIComponent(`Hi ${shopName}, I'm interested in ordering the:\nItem: ${product.name}\nPrice: ${product.price}\nPlease let me know the next steps.`);
+        const waLink = `https://wa.me/${myPhone}?text=${message}`;
+
+        card.innerHTML = `
+            <img src="${product.image}" alt="${product.name}">
+            <div class="product-info">
+                <div class="product-title">${product.name}</div>
+                <div class="product-price">${product.price}</div>
+                <div class="product-meta">Free QC Photos | Worldwide Shipping</div>
+                <a href="${waLink}" target="_blank" class="order-btn">
+                    <svg class="wa-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-115.9zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-5.5-2.8-23.4-8.6-44.6-27.6-16.5-14.7-27.6-32.8-30.8-38.3-3.2-5.5-.3-8.5 2.5-11.2 2.5-2.6 5.5-6.5 8.3-9.7 2.8-3.3 3.7-5.5 5.5-9.3 1.9-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 13.2 5.8 23.5 9.2 31.6 11.8 13.3 4.2 25.4 3.6 35 2.2 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
+                    Order via WhatsApp
+                </a>
             </div>
         `;
+        listContainer.appendChild(card);
     });
-
-    // 打开详情
-    function showDetails(index) {
-        const p = products[index];
-        const content = document.getElementById('detail-content');
-        const text = document.getElementById('detail-text');
-        
-        // 渲染详情图
-        content.innerHTML = p.details.map(img => `<img src="images/${img}" class="detail-img">`).join('');
-        
-        // 渲染文字和购买按钮
-        text.innerHTML = `
-            <h2>${p.name}</h2>
-            <div class="price" style="font-size:22px">${p.price}</div>
-            <p style="margin-top:10px; color:#666; font-size:13px;">Shipping: Worldwide Express (5-10 days)</p>
-            <button class="whatsapp-btn" onclick="orderNow('${p.name}')">
-                ORDER ON WHATSAPP
-            </button>
-        `;
-
-        document.getElementById('detail-overlay').style.display = 'flex';
-        document.body.style.overflow = 'hidden'; 
-    }
-
-    // 关闭详情
-    function closeDetails() {
-        document.getElementById('detail-overlay').style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }
-
-    // 跳转 WhatsApp 函数
-    function orderNow(name) {
-        const text = "Hi KICK12, I am interested in: " + name;
-        const url = "https://wa.me/" + myPhone + "?text=" + encodeURIComponent(text);
-        window.location.href = url;
-    }
 </script>
 
 </body>
