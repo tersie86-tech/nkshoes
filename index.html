@@ -3,59 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LJR PREMIUM SNEAKERS</title>
+    <title>LJR NIKE - PREMIUM SNEAKERS</title>
+    <!-- 引入滑动展示插件 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <style>
-        :root { --main-color: #000; --accent-color: #e41e31; --bg-gray: #f8f8f8; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: #fff; color: #111; }
+        :root { --main-color: #000; --accent-color: #e41e31; --bg-gray: #f9f9f9; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: #fff; color: #111; -webkit-font-smoothing: antialiased; }
         
+        /* 顶部固定区域 */
         .sticky-header { position: sticky; top: 0; z-index: 1000; background: #fff; border-bottom: 1px solid #eee; }
-        .header { padding: 15px 0 5px; text-align: center; }
-        .header h1 { margin: 0; font-size: 22px; font-weight: 900; text-transform: uppercase; font-style: italic; }
         
+        /* --- LJR NIKE 设计感 Logo 样式 --- */
+        .header { padding: 25px 0 10px; text-align: center; }
+        .header h1 { 
+            margin: 0; 
+            font-size: 34px; 
+            font-weight: 900; 
+            font-style: italic; 
+            text-transform: uppercase; 
+            letter-spacing: -2.8px; /* 潮流紧缩感 */
+            line-height: 1;
+            /* 金属质感渐变 */
+            background: linear-gradient(135deg, #000 0%, #444 50%, #000 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.1));
+        }
+        .header p { margin: 8px 0 0; font-size: 11px; color: #aaa; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
+        
+        /* 搜索框 */
         .search-container { padding: 10px 15px; }
         #search-input { 
-            width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 8px; 
+            width: 100%; padding: 14px 18px; border: 1px solid #eee; border-radius: 12px; 
             font-size: 14px; outline: none; box-sizing: border-box; background: var(--bg-gray);
+            transition: 0.3s;
         }
+        #search-input:focus { border-color: #ccc; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
 
-        .category-nav { display: flex; justify-content: center; gap: 10px; padding: 5px 0 15px; border-bottom: 1px solid #eee; }
-        .nav-item { font-size: 12px; font-weight: 700; text-transform: uppercase; cursor: pointer; color: #888; padding: 6px 12px; border-radius: 20px; transition: 0.3s; }
+        /* 分类导航 */
+        .category-nav { display: flex; justify-content: center; gap: 8px; padding: 5px 0 15px; }
+        .nav-item { font-size: 12px; font-weight: 800; text-transform: uppercase; cursor: pointer; color: #999; padding: 8px 16px; border-radius: 25px; transition: 0.3s; }
         .nav-item.active { color: #fff; background: #000; }
 
-        .container { max-width: 500px; margin: 0 auto; padding: 15px 15px 100px; }
-        .product-card { background: #fff; margin-bottom: 40px; border-bottom: 1px solid #eee; }
+        /* 商品展示区 */
+        .container { max-width: 500px; margin: 0 auto; padding: 10px 15px 100px; }
+        .product-card { background: #fff; margin-bottom: 45px; border-bottom: 1px solid #f0f0f0; }
         
-        .swiper { width: 100%; aspect-ratio: 1/1; background: var(--bg-gray); position: relative; }
+        .swiper { width: 100%; aspect-ratio: 1/1; background: var(--bg-gray); position: relative; border-radius: 4px; }
         .swiper-slide img { width: 100%; height: 100%; object-fit: contain; }
         .swiper-pagination-bullet-active { background: #000 !important; }
 
-        /* 图片数字指示器 */
+        /* 图片数字计数器 */
         .img-counter { 
-            position: absolute; bottom: 15px; right: 15px; background: rgba(0,0,0,0.6); 
-            color: #fff; padding: 3px 10px; border-radius: 12px; font-size: 11px; z-index: 10; 
+            position: absolute; bottom: 15px; right: 15px; background: rgba(0,0,0,0.7); 
+            color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; z-index: 10; 
         }
 
-        .product-info { padding: 15px 0; text-align: left; }
-        .product-title { font-size: 17px; font-weight: 700; margin-bottom: 5px; min-height: 40px; }
-        .product-price { color: var(--accent-color); font-size: 20px; font-weight: 900; margin-bottom: 15px; }
+        .product-info { padding: 20px 0; text-align: left; }
+        .product-title { font-size: 18px; font-weight: 800; margin-bottom: 6px; min-height: 44px; color: #000; line-height: 1.2; }
+        .product-price { color: var(--accent-color); font-size: 22px; font-weight: 900; margin-bottom: 18px; }
 
         .order-btn { 
             display: flex; align-items: center; justify-content: center;
             background-color: #000; color: #fff; text-decoration: none;
-            padding: 16px 0; width: 100%; font-size: 15px; font-weight: bold; 
-            border-radius: 6px; text-transform: uppercase;
+            padding: 18px 0; width: 100%; font-size: 15px; font-weight: 900; 
+            border-radius: 8px; text-transform: uppercase; letter-spacing: 0.5px;
         }
-        .features { font-size: 11px; color: #999; margin-top: 12px; text-align: center; }
-        #no-results { display: none; padding: 50px 0; color: #999; text-align: center; }
+        .features { font-size: 10px; color: #bbb; margin-top: 15px; text-align: center; font-weight: 600; letter-spacing: 0.5px; }
+        #no-results { display: none; padding: 60px 0; color: #999; text-align: center; font-weight: 500; }
     </style>
 </head>
 <body>
 
 <div class="sticky-header">
-    <div class="header"><h1>LJR SNEAKERS</h1></div>
+    <div class="header">
+        <h1>LJR NIKE</h1>
+        <p>Premium Batch • US Direct • Best QC</p>
+    </div>
     <div class="search-container">
-        <input type="text" id="search-input" placeholder="Search (e.g. Panda, Jordan)...">
+        <input type="text" id="search-input" placeholder="Search sneakers (e.g. Panda, AJ1)...">
     </div>
     <div class="category-nav">
         <div class="nav-item active" onclick="filterCat('All', this)">All</div>
@@ -66,15 +92,15 @@
 
 <div class="container">
     <div id="product-list"></div>
-    <div id="no-results">No items found.</div>
+    <div id="no-results">Sorry, no matching sneakers found.</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
     const myPhone = "8618506001902";
-    const shopName = "LJR";
+    const shopName = "LJR NIKE";
 
-    // 注意：images 数组里写几个路径，网页就只显示几个位置，不循环，不错位
+    // 商品配置库：images数组写几个路径，网页就只展示几张图
     const products = [
         {
             name: "Nike Dunk Low 'Panda' Black White",
@@ -124,7 +150,7 @@
                 card.className = 'product-card';
                 
                 const slidesHtml = product.images.map(img => `
-                    <div class="swiper-slide"><img src="${img}" onerror="this.src='https://via.placeholder.com/500?text=Image+Not+Found'"></div>
+                    <div class="swiper-slide"><img src="${img}" onerror="this.src='https://via.placeholder.com/600x600?text=LJR+Premium+Sneakers'"></div>
                 `).join('');
 
                 const waMsg = encodeURIComponent(`Hi ${shopName}, I'm interested in: ${product.name}`);
@@ -138,14 +164,14 @@
                     <div class="product-info">
                         <div class="product-title">${product.name}</div>
                         <div class="product-price">${product.price}</div>
-                        <a href="https://wa.me/${myPhone}?text=${waMsg}" target="_blank" class="order-btn">ORDER VIA WHATSAPP</a>
-                        <div class="features">PREMIUM QUALITY • SHIP TO USA • FREE QC</div>
+                        <a href="https://wa.me/${myPhone}?text=${waMsg}" target="_blank" class="order-btn">ORDER ON WHATSAPP</a>
+                        <div class="features">✓ FREE QC PHOTOS • ✓ TOP BATCH • ✓ US SHIPPING</div>
                     </div>
                 `;
                 listContainer.appendChild(card);
                 
                 new Swiper(`.swiper-${pIndex}`, {
-                    loop: false, // 彻底关闭循环，防止图片位显示错误
+                    loop: false, // 彻底关闭循环，修复4张图变5个位的问题
                     pagination: { el: '.swiper-pagination', clickable: true },
                     on: {
                         slideChange: function () {
