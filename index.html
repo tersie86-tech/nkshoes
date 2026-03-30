@@ -7,142 +7,136 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <style>
         :root { 
-            --main-color: #000; 
-            --accent-color: #e41e31; 
-            --bg-gray: #f8f8f8; 
-            --text-main: #111;
-            --text-muted: #888;
-            --card-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            --main-color: #000; --accent-color: #e41e31; --bg-gray: #f8f8f8; 
+            --text-main: #111; --text-muted: #888; --card-bg: #fff;
+            --safe-bottom: env(safe-area-inset-bottom);
+        }
+
+        /* 暗黑模式自适应 */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-gray: #1a1a1a; --text-main: #f5f5f5; --text-muted: #aaa; --card-bg: #111;
+            }
+            body { background-color: #000; }
+            .sticky-header { background: rgba(0, 0, 0, 0.8) !important; border-bottom-color: #333 !important; }
+            .nav-item { border-color: #333; }
+            #search-input { background: #222; color: #fff; }
+            .service-tag { background: #222; color: #999; }
         }
 
         body { 
-            font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            margin: 0; padding: 0; background-color: #fff; color: var(--text-main); 
+            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            margin: 0; padding: 0; background-color: var(--bg-gray); color: var(--text-main); 
             -webkit-font-smoothing: antialiased; 
         }
 
-        /* 顶部固定导航 - 增加磨砂效果 */
+        /* 顶部导航增强 */
         .sticky-header { 
             position: sticky; top: 0; z-index: 1000; 
-            background: rgba(255, 255, 255, 0.85); 
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            border-bottom: 0.5px solid rgba(0,0,0,0.08); 
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border-bottom: 0.5px solid rgba(0,0,0,0.08); padding-bottom: 5px;
         }
+        .header { padding: 15px 0 10px; display: flex; justify-content: center; }
+        #shop-logo { width: 40%; max-width: 130px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
 
-        .header { padding: 18px 0 12px; display: flex; justify-content: center; }
-        #shop-logo { width: 45%; max-width: 150px; height: auto; display: block; }
-
-        /* 搜索框美化 */
-        .search-container { padding: 8px 16px; position: relative; }
+        .search-container { padding: 5px 16px; display: flex; flex-direction: column; gap: 8px; }
         #search-input { 
-            width: 100%; padding: 14px 40px 14px 16px; 
-            border: 1px solid transparent; border-radius: 12px; 
-            font-size: 15px; outline: none; background: var(--bg-gray); 
-            box-sizing: border-box; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%; padding: 12px 16px; border: none; border-radius: 10px; 
+            font-size: 14px; outline: none; background: var(--bg-gray); box-sizing: border-box;
         }
-        #search-input:focus { background: #fff; border-color: #000; box-shadow: 0 0 0 4px rgba(0,0,0,0.05); }
+        .search-stats { font-size: 11px; color: var(--text-muted); padding-left: 5px; font-weight: 600; }
 
-        /* 分类标签美化 */
-        .category-nav { display: flex; justify-content: center; gap: 12px; padding: 12px 0 16px; }
+        .category-nav { display: flex; justify-content: center; gap: 10px; padding: 10px 0; }
         .nav-item { 
-            font-size: 13px; font-weight: 700; text-transform: uppercase; cursor: pointer; 
-            color: var(--text-muted); padding: 8px 20px; border-radius: 25px; 
-            transition: 0.3s; border: 1.5px solid #eee; 
+            font-size: 12px; font-weight: 700; cursor: pointer; color: var(--text-muted); 
+            padding: 6px 15px; border-radius: 20px; border: 1px solid #eee; transition: 0.2s;
         }
         .nav-item.active { color: #fff; background: #000; border-color: #000; }
 
-        .container { max-width: 500px; margin: 0 auto; padding: 10px 16px 100px; }
-
         /* 商品卡片升级 */
+        .container { max-width: 500px; margin: 0 auto; padding: 10px 16px 120px; }
         .product-card { 
-            background: #fff; margin-bottom: 50px; border-radius: 16px; 
-            overflow: hidden; transition: transform 0.3s;
+            background: var(--card-bg); margin-bottom: 35px; border-radius: 20px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03); overflow: hidden;
+            animation: fadeIn 0.6s ease both;
         }
-        .swiper-list { 
-            width: 100%; aspect-ratio: 1/1; background: #fdfdfd; 
-            position: relative; border-radius: 16px; overflow: hidden;
-        }
-        .swiper-slide img { width: 100%; height: 100%; object-fit: contain; }
+        .swiper-list { width: 100%; aspect-ratio: 1/1; position: relative; }
+        .swiper-slide img { width: 100%; height: 100%; object-fit: cover; }
         
+        /* 状态标签：HOT/NEW */
+        .badge {
+            position: absolute; top: 15px; left: 15px; z-index: 10;
+            background: var(--accent-color); color: #fff; font-size: 10px;
+            font-weight: 900; padding: 4px 8px; border-radius: 4px;
+        }
+
         .img-counter { 
-            position: absolute; bottom: 15px; right: 15px; 
-            background: rgba(0,0,0,0.6); color: #fff; 
-            padding: 4px 12px; border-radius: 20px; font-size: 11px; 
-            font-weight: 600; z-index: 10; backdrop-filter: blur(5px);
+            position: absolute; bottom: 15px; right: 15px; background: rgba(0,0,0,0.5); 
+            color: #fff; padding: 3px 10px; border-radius: 10px; font-size: 10px; z-index: 10; 
         }
 
-        .product-info { padding: 20px 4px; }
-        .product-title { 
-            font-size: 18px; font-weight: 800; margin-bottom: 8px; 
-            line-height: 1.2; text-transform: uppercase; letter-spacing: -0.5px;
-        }
-        .product-price { 
-            color: var(--accent-color); font-size: 24px; font-weight: 900; 
-            margin-bottom: 15px; font-family: 'Arial Black', sans-serif;
-        }
+        .product-info { padding: 15px; }
+        .product-title { font-size: 17px; font-weight: 800; margin-bottom: 5px; text-transform: uppercase; }
+        .product-price { color: var(--accent-color); font-size: 22px; font-weight: 900; margin-bottom: 12px; }
 
-        /* 标签美化 */
-        .service-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
-        .service-tag { 
-            font-size: 10px; color: #666; background: #f2f2f2; 
-            padding: 5px 10px; border-radius: 6px; font-weight: 600;
-        }
+        .service-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 15px; }
+        .service-tag { font-size: 10px; background: #f0f0f0; padding: 4px 8px; border-radius: 4px; font-weight: 600; }
 
-        /* 按钮动画 */
         .order-btn { 
-            display: flex; align-items: center; justify-content: center; 
-            background-color: #000; color: #fff; text-decoration: none; 
-            padding: 18px 0; width: 100%; font-size: 14px; font-weight: 800; 
-            border-radius: 12px; text-transform: uppercase; letter-spacing: 1px;
-            transition: all 0.2s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            display: flex; align-items: center; justify-content: center; background: #000; color: #fff; 
+            text-decoration: none; padding: 15px; font-size: 14px; font-weight: 800; border-radius: 12px; 
+            transition: 0.2s; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-        .order-btn:active { transform: scale(0.97); background-color: #333; }
+        .order-btn:active { transform: scale(0.96); opacity: 0.8; }
+
+        /* 悬浮按钮组 */
+        .fab-group { position: fixed; bottom: 30px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 12px; }
+        .fab { 
+            width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); cursor: pointer; transition: 0.3s; border: none;
+        }
+        .fab-whatsapp { background: #25D366; color: white; }
+        .fab-top { background: #fff; color: #000; visibility: hidden; opacity: 0; }
+        .fab-top.show { visibility: visible; opacity: 1; }
 
         /* 全屏查看器 */
-        #viewer-overlay { 
-            display: none; position: fixed; z-index: 9999; left: 0; top: 0; 
-            width: 100%; height: 100%; background: #000; flex-direction: column; 
-        }
-        #viewer-top-bar { padding: 50px 20px 20px; display: flex; justify-content: space-between; align-items: center; color: #fff; }
-        #viewer-close { font-size: 24px; cursor: pointer; width: 40px; text-align: right; }
+        #viewer-overlay { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: #000; flex-direction: column; }
+        #viewer-top-bar { padding: 50px 20px 20px; display: flex; justify-content: space-between; color: #fff; }
+        #viewer-close { font-size: 24px; cursor: pointer; }
 
-        /* 动画加载列表 */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .product-card { animation: fadeIn 0.5s ease both; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
+<!-- 悬浮按钮 -->
+<div class="fab-group">
+    <button class="fab fab-top" id="backToTop" onclick="window.scrollTo({top:0, behavior:'smooth'})">↑</button>
+    <a href="https://wa.me/8618506001902" class="fab fab-whatsapp" target="_blank">
+        <svg width="24" height="24" fill="white" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.185-.573c.948.517 2.031.89 3.145.891h.001c3.182 0 5.767-2.587 5.768-5.766 0-3.18-2.586-5.733-5.768-5.733zm3.568 8.113c-.15.424-.766.766-1.057.813-.242.04-.555.074-1.63-.377-1.378-.576-2.261-1.974-2.331-2.068-.069-.094-.565-.75-.565-1.428 0-.678.356-1.01.484-1.15.128-.141.282-.176.376-.176s.188 0 .268.006c.088.006.208-.033.326.253.12.29.412 1.004.448 1.077.036.073.06.158.012.253s-.072.155-.144.238c-.072.083-.151.139-.063.292.262.454.583.829.988 1.15.52.413 1.001.696 1.545.922.15.064.24.055.33-.046.09-.101.385-.45.488-.601.103-.151.206-.127.346-.075.14.052.888.42 1.042.496s.256.127.293.19c.038.063.038.366-.112.79z"/></svg>
+    </a>
+</div>
+
 <div id="viewer-overlay">
-    <div id="viewer-top-bar">
-        <span id="viewer-counter">1 / 4</span>
-        <span id="viewer-close">✕</span>
-    </div>
+    <div id="viewer-top-bar"><span id="viewer-counter">1 / 4</span><span id="viewer-close">✕</span></div>
     <div class="swiper swiper-viewer"><div class="swiper-wrapper"></div></div>
 </div>
 
 <div class="sticky-header">
-    <div class="header">
-        <img src="images/logo.png" alt="LJR NIKE Logo" id="shop-logo">
-    </div>
+    <div class="header"><img src="images/logo.png" alt="Logo" id="shop-logo"></div>
     <div class="search-container">
-        <input type="text" id="search-input" placeholder="Search (e.g. Panda, Jordan 4)...">
+        <input type="text" id="search-input" placeholder="Search sneakers...">
+        <div class="search-stats" id="search-stats">Loading catalog...</div>
     </div>
-    <div class="category-nav">
-        <div class="nav-item active" onclick="filterCat('All', this)">All</div>
-        <div class="nav-item" onclick="filterCat('Dunk', this)">Dunk</div>
-        <div class="nav-item" onclick="filterCat('Jordan', this)">Jordan</div>
+    <div class="category-nav" id="cat-nav">
+        <!-- JS 动态注入分类及计数 -->
     </div>
 </div>
 
 <div class="container">
     <div id="product-list"></div>
-    <div id="no-results" style="display:none; text-align:center; padding:100px 20px; color:#999;">
-        <div style="font-size: 40px; margin-bottom: 10px;">👟</div>
-        <p>No sneakers found matching your search.</p>
+    <div id="no-results" style="display:none; text-align:center; padding:80px 20px;">
+        <p style="color:#999;">No results found. Try another keyword!</p>
     </div>
 </div>
 
@@ -151,26 +145,26 @@
 <script>
     const myPhone = "8618506001902";
     const products = [
-        { name: "Air Jordan 4 'Black Cat'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 _Black Cat" },
+        { name: "Air Jordan 4 'Black Cat'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 _Black Cat", tag: "HOT" },
         { name: "Air Jordan 4 'Laser'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 _Laser" },
         { name: "Air Jordan 4 'Navy'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 _Navy" },
         { name: "Air Jordan 4 'Pine Green'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 _Pine Green" },
-        { name: "Air Jordan 4 OG 'Brick by Brick_ BIKE'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 OG _Brick by Brick_ BIKE" },
-        { name: "Air Jordan 4 Retro 'Imperial Purple'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 Retro _Imperial Purple" },
-        { name: "Air Jordan 4 Retro White Cement", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 Retro White Cement" },
+        { name: "Air Jordan 4 OG 'Brick by Brick'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 OG _Brick by Brick_ BIKE" },
+        { name: "Air Jordan 4 Retro 'Purple'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 Retro _Imperial Purple" },
+        { name: "Air Jordan 4 White Cement", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 Retro White Cement", tag: "NEW" },
         { name: "Air Jordan 4 'Thunder'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 Thunder" },
-        { name: "Air Jordan 4 'White Thunder' Retro", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 White Thunder Retro" },
+        { name: "Air Jordan 4 'White Thunder'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 White Thunder Retro" },
         { name: "Air Jordan 5 'Wolf Grey'", price: "$199.00", category: "Jordan", folder: "Air Jordan 5 _Wolf Grey" },
         { name: "Air Jordan 5 'GRAPE'", price: "$199.00", category: "Jordan", folder: "Air Jordan 5 GRAPE" },
         { name: "Air Jordan 5 Retro SP 'Dawn'", price: "$199.00", category: "Jordan", folder: "Air Jordan 5 Retro SP_Dawn" },
         { name: "Air Jordan 11 'RARE AIR'", price: "$199.00", category: "Jordan", folder: "Air Jordan 11 _RARE AIR" },
-        { name: "Air Jordan 11 Low 'University Blue'", price: "$199.00", category: "Jordan", folder: "Air Jordan 11 Low _University Blue" },
-        { name: "Air Jordan 11 Retro 'Gamma Blue'", price: "$199.00", category: "Jordan", folder: "Air Jordan 11 Retro _Gamma Blue" },
-        { name: "Air Jordan 4 Retro OG SP Undefeated'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 Retro OG SP Undefeated" },
-        { name: "Air Jordan 5 Retro _White Metallic'", price: "$199.00", category: "Jordan", folder: "Air Jordan 5 Retro _White Metallic" },
-        { name: "Nike Dunk Low 'Panda'", price: "$59.00", category: "Dunk", folder: "dunk-panda" },
-        { name: "Nike Dunk SB 'J-PACK CHICAGO'", price: "$59.00", category: "Dunk", folder: "dunk- SB 'J-PACK CHICAGO'" },
-        { name: "Nike Dunk Low 'Argon' 2022", price: "$59.00", category: "Dunk", folder: "dunk-argon 2022" },
+        { name: "Air Jordan 11 'University Blue'", price: "$199.00", category: "Jordan", folder: "Air Jordan 11 Low _University Blue" },
+        { name: "Air Jordan 11 'Gamma Blue'", price: "$199.00", category: "Jordan", folder: "Air Jordan 11 Retro _Gamma Blue" },
+        { name: "Air Jordan 4 Retro Undefeated", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 Retro OG SP Undefeated" },
+        { name: "Air Jordan 5 White Metallic", price: "$199.00", category: "Jordan", folder: "Air Jordan 5 Retro _White Metallic" },
+        { name: "Nike Dunk Low 'Panda'", price: "$59.00", category: "Dunk", folder: "dunk-panda", tag: "BEST" },
+        { name: "Nike Dunk SB 'CHICAGO'", price: "$59.00", category: "Dunk", folder: "dunk- SB 'J-PACK CHICAGO'" },
+        { name: "Nike Dunk Low 'Argon'", price: "$59.00", category: "Dunk", folder: "dunk-argon 2022" },
         { name: "Nike Dunk Low 'Chunky Dunky'", price: "$59.00", category: "Dunk", folder: "dunk-chunkydunky" },
         { name: "Nike Dunk Low 'Coast'", price: "$59.00", category: "Dunk", folder: "dunk-Coast" },
         { name: "Nike Dunk Low 'fruity pebbles'", price: "$59.00", category: "Dunk", folder: "dunk-fruity pebbles" },
@@ -178,10 +172,10 @@
         { name: "Nike Dunk Low 'game royal'", price: "$59.00", category: "Dunk", folder: "dunk-game royal" },
         { name: "Nike Dunk Low 'Kentucky'", price: "$59.00", category: "Dunk", folder: "dunk-kentucky" },
         { name: "Nike Dunk Low 'Light Bone'", price: "$59.00", category: "Dunk", folder: "dunk-light bone" },
-        { name: "Nike Dunk Low 'Light Orewood Brown'", price: "$59.00", category: "Dunk", folder: "dunk-Light Orewood Brown" },
-        { name: "Nike Dunk Low 'Miami Hurricanes'", price: "$59.00", category: "Dunk", folder: "dunk-miami hurricanes" },
-        { name: "Nike Dunk SB x Travis Scott", price: "$59.00", category: "Dunk", folder: "dunk-sb x Travis Scott" },
-        { name: "Nike Dunk RETRO SP 'ST. JOHN'S", price: "$59.00", category: "Dunk", folder: "dunk-RETRO SP 'ST. JOHN'S'" },
+        { name: "Nike Dunk Low 'Orewood Brown'", price: "$59.00", category: "Dunk", folder: "dunk-Light Orewood Brown" },
+        { name: "Nike Dunk Low 'Hurricanes'", price: "$59.00", category: "Dunk", folder: "dunk-miami hurricanes" },
+        { name: "Nike Dunk SB x Travis Scott", price: "$59.00", category: "Dunk", folder: "dunk-sb x Travis Scott", tag: "HOT" },
+        { name: "Nike Dunk RETRO 'ST. JOHN'S'", price: "$59.00", category: "Dunk", folder: "dunk-RETRO SP 'ST. JOHN'S'" },
         { name: "Nike Dunk Low 'se easter'", price: "$59.00", category: "Dunk", folder: "dunk-se easter" },
         { name: "Nike Dunk Low SP 'Brazil'", price: "$59.00", category: "Dunk", folder: "dunk-sp brazil" },
         { name: "Nike Dunk Low 'Syracuse'", price: "$59.00", category: "Dunk", folder: "dunk-syracuse" },
@@ -192,15 +186,30 @@
     let currentCategory = 'All';
     let searchQuery = '';
 
+    function updateNav() {
+        const nav = document.getElementById('cat-nav');
+        const counts = {
+            All: products.length,
+            Dunk: products.filter(p => p.category === 'Dunk').length,
+            Jordan: products.filter(p => p.category === 'Jordan').length
+        };
+        nav.innerHTML = Object.keys(counts).map(cat => `
+            <div class="nav-item ${currentCategory === cat ? 'active' : ''}" onclick="filterCat('${cat}', this)">
+                ${cat} <span style="opacity:0.6; font-size:10px; margin-left:2px">${counts[cat]}</span>
+            </div>
+        `).join('');
+    }
+
     function render() {
         const container = document.getElementById('product-list');
-        container.innerHTML = '';
-        
         const filtered = products.filter(p => 
             (currentCategory === 'All' || p.category === currentCategory) && 
             p.name.toLowerCase().includes(searchQuery.toLowerCase())
         );
 
+        document.getElementById('search-stats').innerText = `Showing ${filtered.length} sneakers`;
+        container.innerHTML = '';
+        
         if(filtered.length === 0) {
             document.getElementById('no-results').style.display = 'block';
             return;
@@ -210,24 +219,21 @@
         filtered.forEach((p, pIdx) => {
             const card = document.createElement('div');
             card.className = 'product-card';
-            //  staggered delay for animation
             card.style.animationDelay = `${pIdx * 0.05}s`;
             
-            let slidesHtml = '';
-            for(let i=1; i<=4; i++) {
-                slidesHtml += `
-                    <div class="swiper-slide">
-                        <img src="images/${p.folder}/${i}.jpg" 
-                             onerror="this.src='https://via.placeholder.com/600x600?text=IMAGE+PREVIEW'" 
-                             onclick="openViewer('${p.folder}', ${i-1})">
-                    </div>`;
-            }
-
-            const waMsg = `Hi! I want to order this:\n👟 *${p.name}*\n💰 Price: ${p.price}\n\nPlease check availability.`;
+            const badge = p.tag ? `<div class="badge">${p.tag}</div>` : '';
+            const waMsg = encodeURIComponent(`Hi! I'm interested in:\n👟 *${p.name}*\n💰 *${p.price}*\nAvailable in stock?`);
 
             card.innerHTML = `
                 <div class="swiper swiper-list-${pIdx}">
-                    <div class="swiper-wrapper">${slidesHtml}</div>
+                    ${badge}
+                    <div class="swiper-wrapper">
+                        ${[1,2,3,4].map(i => `
+                            <div class="swiper-slide">
+                                <img src="images/${p.folder}/${i}.jpg" loading="lazy" onclick="openViewer('${p.folder}', ${i-1})">
+                            </div>
+                        `).join('')}
+                    </div>
                     <div class="img-counter">1 / 4</div>
                 </div>
                 <div class="product-info">
@@ -235,46 +241,33 @@
                     <div class="product-price">${p.price}</div>
                     <div class="service-tags">
                         <div class="service-tag">FREE SHIPPING</div>
-                        <div class="service-tag">LJR PREMIUM</div>
-                        <div class="service-tag">FAST DELIVERY</div>
+                        <div class="service-tag">7-DAY RETURNS</div>
+                        <div class="service-tag">LJR BATCH</div>
                     </div>
-                    <a href="https://wa.me/${myPhone}?text=${encodeURIComponent(waMsg)}" target="_blank" class="order-btn">
-                        Order on WhatsApp
-                    </a>
+                    <a href="https://wa.me/${myPhone}?text=${waMsg}" target="_blank" class="order-btn">Inquiry via WhatsApp</a>
                 </div>
             `;
             container.appendChild(card);
-
             new Swiper(`.swiper-list-${pIdx}`, {
-                on: {
-                    slideChange: function () {
-                        card.querySelector('.img-counter').innerText = `${this.activeIndex + 1} / 4`;
-                    }
-                }
+                on: { slideChange: function () { card.querySelector('.img-counter').innerText = `${this.activeIndex + 1} / 4`; } }
             });
         });
     }
+
+    // 回到顶部按钮逻辑
+    window.onscroll = () => {
+        document.getElementById('backToTop').classList.toggle('show', window.scrollY > 500);
+    };
 
     let viewerSwiper = null;
     window.openViewer = (folder, startIndex) => {
         const overlay = document.getElementById('viewer-overlay');
         const wrapper = document.querySelector('.swiper-viewer .swiper-wrapper');
-        wrapper.innerHTML = '';
-        for(let i=1; i<=4; i++) {
-            wrapper.innerHTML += `<div class="swiper-slide"><div class="swiper-zoom-container"><img src="images/${folder}/${i}.jpg"></div></div>`;
-        }
+        wrapper.innerHTML = [1,2,3,4].map(i => `<div class="swiper-slide"><div class="swiper-zoom-container"><img src="images/${folder}/${i}.jpg"></div></div>`).join('');
         overlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
         if(viewerSwiper) viewerSwiper.destroy();
-        viewerSwiper = new Swiper('.swiper-viewer', {
-            initialSlide: startIndex,
-            zoom: true,
-            on: {
-                slideChange: function() {
-                    document.getElementById('viewer-counter').innerText = `${this.activeIndex + 1} / 4`;
-                }
-            }
-        });
+        viewerSwiper = new Swiper('.swiper-viewer', { initialSlide: startIndex, zoom: true, on: { slideChange: function() { document.getElementById('viewer-counter').innerText = `${this.activeIndex + 1} / 4`; } } });
         document.getElementById('viewer-counter').innerText = `${startIndex + 1} / 4`;
     };
 
@@ -289,12 +282,12 @@
     });
 
     window.filterCat = (cat, el) => {
-        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-        el.classList.add('active');
         currentCategory = cat;
+        updateNav();
         render();
     };
 
+    updateNav();
     render();
 </script>
 </body>
