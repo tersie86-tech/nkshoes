@@ -13,9 +13,22 @@
         /* 顶部固定导航 */
         .sticky-header { position: sticky; top: 0; z-index: 1000; background: #fff; border-bottom: 1px solid #eee; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         
-        /* Logo 容器优化 */
-        .header { padding: 12px 0 5px; text-align: center; display: flex; justify-content: center; align-items: center; }
-        #shop-logo { height: 50px; width: auto; display: block; }
+        /* --- 优化后的 Logo 样式 --- */
+        .header { 
+            padding: 15px 0 10px; 
+            text-align: center; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+        }
+        #shop-logo { 
+            width: 90%;          /* 占据屏幕宽度的90%，让Logo显眼 */
+            max-width: 350px;    /* 限制最大宽度，防止在大屏幕上过大 */
+            height: auto;        /* 高度自适应，确保图片不失真 */
+            display: block;
+            margin: 0 auto;
+        }
+        /* ----------------------- */
         
         /* 搜索框样式 */
         .search-container { padding: 8px 15px; }
@@ -68,7 +81,7 @@
 
 <div class="sticky-header">
     <div class="header">
-        <!-- Logo 图片替换文字 -->
+        <!-- Logo 图片 -->
         <img src="images/logo.png" alt="LJR NIKE Logo" id="shop-logo">
     </div>
     <div class="search-container">
@@ -171,7 +184,6 @@
                     <div class="product-title">${p.name}</div>
                     <div class="product-price">${p.price}</div>
                     
-                    <!-- 优化的服务文案栏 -->
                     <div class="service-tags">
                         <div class="service-tag"><span>✈️</span>3-7 Days Delivery</div>
                         <div class="service-tag"><span>📦</span>Free Shipping</div>
