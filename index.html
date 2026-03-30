@@ -9,7 +9,7 @@
         :root { 
             --main-color: #000; --accent-color: #e41e31; --bg-gray: #f8f8f8; 
             --text-main: #111; --text-muted: #888; --card-bg: #fff;
-            --safe-bottom: env(safe-area-inset-bottom);
+            --safe-top: env(safe-area-inset-top);
         }
 
         /* 暗黑模式自适应 */
@@ -27,7 +27,7 @@
         body { 
             font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
             margin: 0; padding: 0; background-color: var(--bg-gray); color: var(--text-main); 
-            -webkit-font-smoothing: antialiased; 
+            -webkit-font-smoothing: antialiased; overflow-x: hidden;
         }
 
         /* 顶部导航增强 */
@@ -37,107 +37,131 @@
             border-bottom: 0.5px solid rgba(0,0,0,0.08); padding-bottom: 5px;
         }
         .header { padding: 15px 0 10px; display: flex; justify-content: center; }
-        #shop-logo { width: 40%; max-width: 130px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
+        
+        /* Logo 优化：利用 mix-blend-mode 自动去白底 */
+        #shop-logo { 
+            width: 40%; max-width: 130px; 
+            mix-blend-mode: multiply; /* 如果背景是浅色，这行代码能滤掉Logo白底 */
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05)); 
+        }
 
-        .search-container { padding: 5px 16px; display: flex; flex-direction: column; gap: 8px; }
+        .search-container { padding: 5px 16px; position: relative; display: flex; flex-direction: column; gap: 8px; }
         #search-input { 
-            width: 100%; padding: 12px 16px; border: none; border-radius: 10px; 
+            width: 100%; padding: 12px 40px 12px 16px; border: none; border-radius: 12px; 
             font-size: 14px; outline: none; background: var(--bg-gray); box-sizing: border-box;
         }
-        .search-stats { font-size: 11px; color: var(--text-muted); padding-left: 5px; font-weight: 600; }
+        .clear-search {
+            position: absolute; right: 28px; top: 18px; font-size: 18px; color: #ccc; cursor: pointer; display: none;
+        }
 
-        .category-nav { display: flex; justify-content: center; gap: 10px; padding: 10px 0; }
+        .category-nav { display: flex; justify-content: center; gap: 10px; padding: 10px 0; overflow-x: auto; }
         .nav-item { 
             font-size: 12px; font-weight: 700; cursor: pointer; color: var(--text-muted); 
-            padding: 6px 15px; border-radius: 20px; border: 1px solid #eee; transition: 0.2s;
+            padding: 6px 15px; border-radius: 20px; border: 1px solid rgba(0,0,0,0.05); transition: 0.2s; white-space: nowrap;
         }
         .nav-item.active { color: #fff; background: #000; border-color: #000; }
 
-        /* 商品卡片升级 */
+        /* 商品卡片 */
         .container { max-width: 500px; margin: 0 auto; padding: 10px 16px 120px; }
         .product-card { 
-            background: var(--card-bg); margin-bottom: 35px; border-radius: 20px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03); overflow: hidden;
-            animation: fadeIn 0.6s ease both;
+            background: var(--card-bg); margin-bottom: 30px; border-radius: 24px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04); overflow: hidden;
+            animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
-        .swiper-list { width: 100%; aspect-ratio: 1/1; position: relative; }
+        
+        .swiper-list { width: 100%; aspect-ratio: 1/1; position: relative; background: #eee; }
         .swiper-slide img { width: 100%; height: 100%; object-fit: cover; }
         
-        /* 状态标签：HOT/NEW */
         .badge {
             position: absolute; top: 15px; left: 15px; z-index: 10;
             background: var(--accent-color); color: #fff; font-size: 10px;
-            font-weight: 900; padding: 4px 8px; border-radius: 4px;
+            font-weight: 900; padding: 4px 10px; border-radius: 6px; box-shadow: 0 2px 8px rgba(228,30,49,0.3);
         }
 
         .img-counter { 
-            position: absolute; bottom: 15px; right: 15px; background: rgba(0,0,0,0.5); 
-            color: #fff; padding: 3px 10px; border-radius: 10px; font-size: 10px; z-index: 10; 
+            position: absolute; bottom: 15px; right: 15px; background: rgba(0,0,0,0.6); 
+            color: #fff; padding: 4px 10px; border-radius: 20px; font-size: 10px; z-index: 10; backdrop-filter: blur(4px);
         }
 
-        .product-info { padding: 15px; }
-        .product-title { font-size: 17px; font-weight: 800; margin-bottom: 5px; text-transform: uppercase; }
-        .product-price { color: var(--accent-color); font-size: 22px; font-weight: 900; margin-bottom: 12px; }
+        .product-info { padding: 20px; }
+        .product-title { font-size: 18px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase; line-height: 1.2; }
+        .product-price { color: var(--accent-color); font-size: 24px; font-weight: 900; margin-bottom: 15px; }
 
-        .service-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 15px; }
-        .service-tag { font-size: 10px; background: #f0f0f0; padding: 4px 8px; border-radius: 4px; font-weight: 600; }
+        .service-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+        .service-tag { font-size: 10px; background: rgba(0,0,0,0.04); padding: 5px 10px; border-radius: 6px; font-weight: 700; color: var(--text-muted); }
 
         .order-btn { 
             display: flex; align-items: center; justify-content: center; background: #000; color: #fff; 
-            text-decoration: none; padding: 15px; font-size: 14px; font-weight: 800; border-radius: 12px; 
-            transition: 0.2s; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-decoration: none; padding: 16px; font-size: 15px; font-weight: 800; border-radius: 14px; 
+            transition: 0.3s; box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
-        .order-btn:active { transform: scale(0.96); opacity: 0.8; }
+        .order-btn:active { transform: scale(0.97); }
 
-        /* 悬浮按钮组 */
+        /* 全屏查看器修复 - 解决显示不出来的核心 */
+        #viewer-overlay { 
+            display: none; position: fixed; z-index: 9999; left: 0; top: 0; 
+            width: 100%; height: 100%; background: #000; flex-direction: column; 
+        }
+        #viewer-top-bar { 
+            padding: calc(var(--safe-top) + 20px) 20px 20px; 
+            display: flex; justify-content: space-between; color: #fff; z-index: 10001;
+        }
+        #viewer-close { font-size: 28px; cursor: pointer; width: 40px; text-align: right; }
+        #viewer-counter { font-weight: 700; font-size: 16px; }
+
+        .swiper-viewer { width: 100%; flex: 1; height: 100%; }
+        .swiper-viewer .swiper-slide { display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .swiper-viewer img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        /* 悬浮按钮 */
         .fab-group { position: fixed; bottom: 30px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 12px; }
         .fab { 
-            width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15); cursor: pointer; transition: 0.3s; border: none;
+            width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2); cursor: pointer; transition: 0.3s; border: none;
         }
-        .fab-whatsapp { background: #25D366; color: white; }
+        .fab-whatsapp { background: #25D366; }
         .fab-top { background: #fff; color: #000; visibility: hidden; opacity: 0; }
         .fab-top.show { visibility: visible; opacity: 1; }
 
-        /* 全屏查看器 */
-        #viewer-overlay { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: #000; flex-direction: column; }
-        #viewer-top-bar { padding: 50px 20px 20px; display: flex; justify-content: space-between; color: #fff; }
-        #viewer-close { font-size: 24px; cursor: pointer; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-<!-- 悬浮按钮 -->
-<div class="fab-group">
-    <button class="fab fab-top" id="backToTop" onclick="window.scrollTo({top:0, behavior:'smooth'})">↑</button>
-    <a href="https://wa.me/8618506001902" class="fab fab-whatsapp" target="_blank">
-        <svg width="24" height="24" fill="white" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.185-.573c.948.517 2.031.89 3.145.891h.001c3.182 0 5.767-2.587 5.768-5.766 0-3.18-2.586-5.733-5.768-5.733zm3.568 8.113c-.15.424-.766.766-1.057.813-.242.04-.555.074-1.63-.377-1.378-.576-2.261-1.974-2.331-2.068-.069-.094-.565-.75-.565-1.428 0-.678.356-1.01.484-1.15.128-.141.282-.176.376-.176s.188 0 .268.006c.088.006.208-.033.326.253.12.29.412 1.004.448 1.077.036.073.06.158.012.253s-.072.155-.144.238c-.072.083-.151.139-.063.292.262.454.583.829.988 1.15.52.413 1.001.696 1.545.922.15.064.24.055.33-.046.09-.101.385-.45.488-.601.103-.151.206-.127.346-.075.14.052.888.42 1.042.496s.256.127.293.19c.038.063.038.366-.112.79z"/></svg>
-    </a>
-</div>
-
 <div id="viewer-overlay">
-    <div id="viewer-top-bar"><span id="viewer-counter">1 / 4</span><span id="viewer-close">✕</span></div>
-    <div class="swiper swiper-viewer"><div class="swiper-wrapper"></div></div>
+    <div id="viewer-top-bar">
+        <span id="viewer-counter">1 / 4</span>
+        <span id="viewer-close">✕</span>
+    </div>
+    <div class="swiper swiper-viewer">
+        <div class="swiper-wrapper">
+            <!-- 动态注入 -->
+        </div>
+    </div>
 </div>
 
 <div class="sticky-header">
     <div class="header"><img src="images/logo.png" alt="Logo" id="shop-logo"></div>
     <div class="search-container">
-        <input type="text" id="search-input" placeholder="Search sneakers...">
-        <div class="search-stats" id="search-stats">Loading catalog...</div>
+        <input type="text" id="search-input" placeholder="Search by model, color...">
+        <span class="clear-search" id="clear-search">×</span>
+        <div class="search-stats" id="search-stats" style="font-size: 11px; opacity: 0.6; padding-left: 4px;"></div>
     </div>
-    <div class="category-nav" id="cat-nav">
-        <!-- JS 动态注入分类及计数 -->
-    </div>
+    <div class="category-nav" id="cat-nav"></div>
 </div>
 
 <div class="container">
     <div id="product-list"></div>
-    <div id="no-results" style="display:none; text-align:center; padding:80px 20px;">
-        <p style="color:#999;">No results found. Try another keyword!</p>
+    <div id="no-results" style="display:none; text-align:center; padding:100px 20px;">
+        <p style="color:#999; font-size: 14px;">No sneakers found for your search.</p>
     </div>
+</div>
+
+<div class="fab-group">
+    <button class="fab fab-top" id="backToTop" onclick="window.scrollTo({top:0, behavior:'smooth'})">↑</button>
+    <a href="https://wa.me/8618506001902" class="fab fab-whatsapp" target="_blank">
+        <svg width="28" height="28" fill="white" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.185-.573c.948.517 2.031.89 3.145.891h.001c3.182 0 5.767-2.587 5.768-5.766 0-3.18-2.586-5.733-5.768-5.733zm3.568 8.113c-.15.424-.766.766-1.057.813-.242.04-.555.074-1.63-.377-1.378-.576-2.261-1.974-2.331-2.068-.069-.094-.565-.75-.565-1.428 0-.678.356-1.01.484-1.15.128-.141.282-.176.376-.176s.188 0 .268.006c.088.006.208-.033.326.253.12.29.412 1.004.448 1.077.036.073.06.158.012.253s-.072.155-.144.238c-.072.083-.151.139-.063.292.262.454.583.829.988 1.15.52.413 1.001.696 1.545.922.15.064.24.055.33-.046.09-.101.385-.45.488-.601.103-.151.206-.127.346-.075.14.052.888.42 1.042.496s.256.127.293.19c.038.063.038.366-.112.79z"/></svg>
+    </a>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
@@ -185,6 +209,7 @@
 
     let currentCategory = 'All';
     let searchQuery = '';
+    let viewerSwiper = null;
 
     function updateNav() {
         const nav = document.getElementById('cat-nav');
@@ -194,8 +219,8 @@
             Jordan: products.filter(p => p.category === 'Jordan').length
         };
         nav.innerHTML = Object.keys(counts).map(cat => `
-            <div class="nav-item ${currentCategory === cat ? 'active' : ''}" onclick="filterCat('${cat}', this)">
-                ${cat} <span style="opacity:0.6; font-size:10px; margin-left:2px">${counts[cat]}</span>
+            <div class="nav-item ${currentCategory === cat ? 'active' : ''}" onclick="filterCat('${cat}')">
+                ${cat} <span style="opacity:0.5; font-size:10px;">${counts[cat]}</span>
             </div>
         `).join('');
     }
@@ -207,7 +232,7 @@
             p.name.toLowerCase().includes(searchQuery.toLowerCase())
         );
 
-        document.getElementById('search-stats').innerText = `Showing ${filtered.length} sneakers`;
+        document.getElementById('search-stats').innerText = `${filtered.length} sneakers matched`;
         container.innerHTML = '';
         
         if(filtered.length === 0) {
@@ -222,10 +247,10 @@
             card.style.animationDelay = `${pIdx * 0.05}s`;
             
             const badge = p.tag ? `<div class="badge">${p.tag}</div>` : '';
-            const waMsg = encodeURIComponent(`Hi! I'm interested in:\n👟 *${p.name}*\n💰 *${p.price}*\nAvailable in stock?`);
+            const waMsg = encodeURIComponent(`Hi! I'm interested in:\n👟 *${p.name}*\n💰 *${p.price}*\nPlease check the stock for me.`);
 
             card.innerHTML = `
-                <div class="swiper swiper-list-${pIdx}">
+                <div class="swiper swiper-list-${pIdx}" style="position:relative">
                     ${badge}
                     <div class="swiper-wrapper">
                         ${[1,2,3,4].map(i => `
@@ -240,9 +265,9 @@
                     <div class="product-title">${p.name}</div>
                     <div class="product-price">${p.price}</div>
                     <div class="service-tags">
-                        <div class="service-tag">FREE SHIPPING</div>
-                        <div class="service-tag">7-DAY RETURNS</div>
                         <div class="service-tag">LJR BATCH</div>
+                        <div class="service-tag">FREE SHIPPING</div>
+                        <div class="service-tag">QC PHOTOS</div>
                     </div>
                     <a href="https://wa.me/${myPhone}?text=${waMsg}" target="_blank" class="order-btn">Inquiry via WhatsApp</a>
                 </div>
@@ -254,20 +279,33 @@
         });
     }
 
-    // 回到顶部按钮逻辑
-    window.onscroll = () => {
-        document.getElementById('backToTop').classList.toggle('show', window.scrollY > 500);
-    };
-
-    let viewerSwiper = null;
+    // 全屏查看器核心逻辑
     window.openViewer = (folder, startIndex) => {
         const overlay = document.getElementById('viewer-overlay');
         const wrapper = document.querySelector('.swiper-viewer .swiper-wrapper');
-        wrapper.innerHTML = [1,2,3,4].map(i => `<div class="swiper-slide"><div class="swiper-zoom-container"><img src="images/${folder}/${i}.jpg"></div></div>`).join('');
+        
+        wrapper.innerHTML = [1,2,3,4].map(i => `
+            <div class="swiper-slide">
+                <div class="swiper-zoom-container">
+                    <img src="images/${folder}/${i}.jpg">
+                </div>
+            </div>
+        `).join('');
+        
         overlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
-        if(viewerSwiper) viewerSwiper.destroy();
-        viewerSwiper = new Swiper('.swiper-viewer', { initialSlide: startIndex, zoom: true, on: { slideChange: function() { document.getElementById('viewer-counter').innerText = `${this.activeIndex + 1} / 4`; } } });
+
+        if(viewerSwiper) viewerSwiper.destroy(true, true);
+        
+        viewerSwiper = new Swiper('.swiper-viewer', {
+            initialSlide: startIndex,
+            zoom: { maxRatio: 3, minRatio: 1 },
+            on: { 
+                slideChange: function() { 
+                    document.getElementById('viewer-counter').innerText = `${this.activeIndex + 1} / 4`; 
+                } 
+            }
+        });
         document.getElementById('viewer-counter').innerText = `${startIndex + 1} / 4`;
     };
 
@@ -276,17 +314,35 @@
         document.body.style.overflow = 'auto';
     };
 
-    document.getElementById('search-input').addEventListener('input', (e) => {
+    // 搜索逻辑
+    const searchInput = document.getElementById('search-input');
+    const clearBtn = document.getElementById('clear-search');
+
+    searchInput.addEventListener('input', (e) => {
         searchQuery = e.target.value;
+        clearBtn.style.display = searchQuery ? 'block' : 'none';
         render();
     });
 
-    window.filterCat = (cat, el) => {
-        currentCategory = cat;
-        updateNav();
+    clearBtn.onclick = () => {
+        searchInput.value = '';
+        searchQuery = '';
+        clearBtn.style.display = 'none';
         render();
     };
 
+    window.filterCat = (cat) => {
+        currentCategory = cat;
+        updateNav();
+        render();
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    };
+
+    window.onscroll = () => {
+        document.getElementById('backToTop').classList.toggle('show', window.scrollY > 600);
+    };
+
+    // 初始化
     updateNav();
     render();
 </script>
