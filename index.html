@@ -12,8 +12,10 @@
         
         /* 顶部固定导航 */
         .sticky-header { position: sticky; top: 0; z-index: 1000; background: #fff; border-bottom: 1px solid #eee; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .header { padding: 15px 0 5px; text-align: center; }
-        .header h1 { margin: 0; font-size: 24px; font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -1.5px; }
+        
+        /* Logo 容器优化 */
+        .header { padding: 12px 0 5px; text-align: center; display: flex; justify-content: center; align-items: center; }
+        #shop-logo { height: 50px; width: auto; display: block; }
         
         /* 搜索框样式 */
         .search-container { padding: 8px 15px; }
@@ -65,7 +67,10 @@
 </div>
 
 <div class="sticky-header">
-    <div class="header"><h1>LJR NIKE</h1></div>
+    <div class="header">
+        <!-- Logo 图片替换文字 -->
+        <img src="images/logo.png" alt="LJR NIKE Logo" id="shop-logo">
+    </div>
     <div class="search-container">
         <input type="text" id="search-input" placeholder="Search (e.g. Panda, Jordan 4)...">
     </div>
