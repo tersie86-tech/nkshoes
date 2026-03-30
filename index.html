@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LJR NIKE - SMART CATALOG</title>
+    <title>LJR NIKE - PREMIUM SNEAKERS</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <style>
         :root { --main-color: #000; --accent-color: #e41e31; --bg-gray: #f9f9f9; }
@@ -15,6 +15,7 @@
             letter-spacing: -2.8px; line-height: 1;
             background: linear-gradient(135deg, #000 0%, #444 50%, #000 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.1));
         }
         .header p { margin: 8px 0 0; font-size: 11px; color: #aaa; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
         .search-container { padding: 10px 15px; }
@@ -25,7 +26,6 @@
         .container { max-width: 500px; margin: 0 auto; padding: 10px 15px 100px; }
         .product-card { background: #fff; margin-bottom: 45px; border-bottom: 1px solid #f0f0f0; }
         .swiper-list { width: 100%; aspect-ratio: 1/1; background: var(--bg-gray); position: relative; border-radius: 4px; }
-        /* 关键：初始隐藏图片，加载成功才显示 */
         .swiper-slide { display: none; }
         .swiper-slide.is-valid { display: block; }
         .swiper-list .swiper-slide img { width: 100%; height: 100%; object-fit: contain; cursor: zoom-in; }
@@ -64,95 +64,65 @@
 <script>
     const myPhone = "8618506001902";
     const imgExt = ".jpg"; 
-    const maxPossibleImages = 12; // 自动探测最多12张图
+    const maxImg = 12; // 自动探测上限
 
-    // 数据库：不再需要写 count，代码会自动找
+    // 已根据要求更新价格：Dunk $59, Jordan $199
     const products = [
-        { name: "Air Jordan 4 'Black Cat'", price: "$145.00", category: "Jordan", folder: "Air Jordan 4_Black Cat" },
-        { name: "Air Jordan 4 'Laser'", price: "$145.00", category: "Jordan", folder: "Air Jordan 4_Laser" },
-        { name: "Air Jordan 4 'Navy'", price: "$145.00", category: "Jordan", folder: "Air Jordan 4_Navy" },
-        { name: "Air Jordan 4 'Pine Green'", price: "$150.00", category: "Jordan", folder: "Air Jordan 4_Pine Green" },
-        { name: "Air Jordan 4 OG 'Brick by Brick'", price: "$145.00", category: "Jordan", folder: "Air Jordan 4 OG _Brick by Brick_ Bl..." },
-        { name: "Air Jordan 4 Retro 'Imperial Purple'", price: "$145.00", category: "Jordan", folder: "Air Jordan 4 Retro _Imperial Purple" },
-        { name: "Air Jordan 4 Retro OG SP Undefeated", price: "$160.00", category: "Jordan", folder: "Air Jordan 4 Retro OG SP Undefea..." },
-        { name: "Air Jordan 4 Retro White Cement", price: "$145.00", category: "Jordan", folder: "Air Jordan 4 Retro White Cement" },
-        { name: "Air Jordan 4 'Thunder'", price: "$145.00", category: "Jordan", folder: "Air Jordan 4 Thunder" },
-        { name: "Air Jordan 4 'White Thunder' Retro", price: "$145.00", category: "Jordan", folder: "Air Jordan 4 White Thunder Retro" },
-        { name: "Air Jordan 5 'Wolf Grey'", price: "$140.00", category: "Jordan", folder: "Air Jordan 5_Wolf Grey" },
-        { name: "Air Jordan 5 'GRAPE'", price: "$140.00", category: "Jordan", folder: "Air Jordan 5 GRAPE" },
-        { name: "Air Jordan 5 Retro 'White Metallic'", price: "$140.00", category: "Jordan", folder: "Air Jordan 5 Retro _White Metallic" },
-        { name: "Air Jordan 5 Retro SP 'Dawn'", price: "$145.00", category: "Jordan", folder: "Air Jordan 5 Retro SP_Dawn" },
-        { name: "Air Jordan 11 'RARE AIR'", price: "$155.00", category: "Jordan", folder: "Air Jordan 11 _RARE AIR" },
-        { name: "Air Jordan 11 Low 'University Blue'", price: "$140.00", category: "Jordan", folder: "Air Jordan 11 Low _University Blue" },
-        { name: "Air Jordan 11 Retro 'Gamma Blue'", price: "$155.00", category: "Jordan", folder: "Air Jordan 11 Retro _Gamma Blue" },
-        { name: "Air Jordan 11 Retro 'Cap and Gown'", price: "$155.00", category: "Jordan", folder: "Air Jordan 11 Retro Cap and Gown" },
-        { name: "Nike Dunk Low 'Panda'", price: "$110.00", category: "Dunk", folder: "dunk-panda" },
-        { name: "Nike Dunk SB 'J-PACK CHICAGO'", price: "$125.00", category: "Dunk", folder: "dunk- SB 'J-PACK CHICAGO'" },
-        { name: "Nike Dunk Low 'Argon' 2022", price: "$115.00", category: "Dunk", folder: "dunk-argon 2022" },
-        { name: "Nike Dunk Low 'Chunky Dunky'", price: "$140.00", category: "Dunk", folder: "dunk-chun kydunky" },
-        { name: "Nike Dunk Low 'Coast'", price: "$115.00", category: "Dunk", folder: "dunk-Coast" },
-        { name: "Nike Dunk Low 'Fruity Pebbles'", price: "$120.00", category: "Dunk", folder: "dunk-fruit y pebbles" },
-        { name: "Nike Dunk Low 'Game Royal'", price: "$115.00", category: "Dunk", folder: "dunk-gam e royal" },
-        { name: "Nike Dunk Low 'Grey Fog'", price: "$115.00", category: "Dunk", folder: "dunk-grey fog" },
-        { name: "Nike Dunk Low 'Kentucky'", price: "$115.00", category: "Dunk", folder: "dunk-kent ucky" },
-        { name: "Nike Dunk Low 'Light Bone'", price: "$115.00", category: "Dunk", folder: "dunk-light bone" },
-        { name: "Nike Dunk Low 'Light Orewood Brown'", price: "$115.00", category: "Dunk", folder: "dunk-Ligh t Orewood Brown" },
-        { name: "Nike Dunk Low 'Miami Hurricanes'", price: "$115.00", category: "Dunk", folder: "dunk-mia mi hurricanes" },
-        { name: "Nike Dunk Low RETRO SP 'ST. JOHN'S'", price: "$115.00", category: "Dunk", folder: "dunk-RET RO SP 'ST. JOHN'S'" },
-        { name: "Nike Dunk SB x Travis Scott", price: "$150.00", category: "Dunk", folder: "dunk-sb x Travis Scott" },
-        { name: "Nike Dunk Low 'Easter'", price: "$115.00", category: "Dunk", folder: "dunk-se easter" },
-        { name: "Nike Dunk Low SP 'Brazil'", price: "$120.00", category: "Dunk", folder: "dunk-sp brazil" },
-        { name: "Nike Dunk Low 'Syracuse'", price: "$120.00", category: "Dunk", folder: "dunk-syra cuse" },
-        { name: "Nike Dunk Low 'Triple Pink'", price: "$110.00", category: "Dunk", folder: "dunk-tripl e pink" },
-        { name: "Nike Dunk Low 'University Blue'", price: "$115.00", category: "Dunk", folder: "dunk-univ ersity blue" }
+        { name: "Air Jordan 4 'Black Cat'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4_Black Cat" },
+        { name: "Air Jordan 4 'Laser'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4_Laser" },
+        { name: "Air Jordan 4 'Navy'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4_Navy" },
+        { name: "Air Jordan 4 'Pine Green'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4_Pine Green" },
+        { name: "Air Jordan 4 OG 'Brick by Brick'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 OG _Brick by Brick_ Bl..." },
+        { name: "Air Jordan 4 Retro 'Imperial Purple'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 Retro _Imperial Purple" },
+        { name: "Air Jordan 4 Retro OG SP Undefeated", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 Retro OG SP Undefea..." },
+        { name: "Air Jordan 4 Retro White Cement", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 Retro White Cement" },
+        { name: "Air Jordan 4 'Thunder'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 Thunder" },
+        { name: "Air Jordan 4 'White Thunder' Retro", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 White Thunder Retro" },
+        { name: "Air Jordan 5 'Wolf Grey'", price: "$199.00", category: "Jordan", folder: "Air Jordan 5_Wolf Grey" },
+        { name: "Air Jordan 5 'GRAPE'", price: "$199.00", category: "Jordan", folder: "Air Jordan 5 GRAPE" },
+        { name: "Air Jordan 5 Retro 'White Metallic'", price: "$199.00", category: "Jordan", folder: "Air Jordan 5 Retro _White Metallic" },
+        { name: "Air Jordan 5 Retro SP 'Dawn'", price: "$199.00", category: "Jordan", folder: "Air Jordan 5 Retro SP_Dawn" },
+        { name: "Air Jordan 11 'RARE AIR'", price: "$199.00", category: "Jordan", folder: "Air Jordan 11 _RARE AIR" },
+        { name: "Air Jordan 11 Low 'University Blue'", price: "$199.00", category: "Jordan", folder: "Air Jordan 11 Low _University Blue" },
+        { name: "Air Jordan 11 Retro 'Gamma Blue'", price: "$199.00", category: "Jordan", folder: "Air Jordan 11 Retro _Gamma Blue" },
+        { name: "Air Jordan 11 Retro 'Cap and Gown'", price: "$199.00", category: "Jordan", folder: "Air Jordan 11 Retro Cap and Gown" },
+        { name: "Nike Dunk Low 'Panda'", price: "$59.00", category: "Dunk", folder: "dunk-panda" },
+        { name: "Nike Dunk SB 'J-PACK CHICAGO'", price: "$59.00", category: "Dunk", folder: "dunk- SB 'J-PACK CHICAGO'" },
+        { name: "Nike Dunk Low 'Argon' 2022", price: "$59.00", category: "Dunk", folder: "dunk-argon 2022" },
+        { name: "Nike Dunk Low 'Chunky Dunky'", price: "$59.00", category: "Dunk", folder: "dunk-chun kydunky" },
+        { name: "Nike Dunk Low 'Coast'", price: "$59.00", category: "Dunk", folder: "dunk-Coast" },
+        { name: "Nike Dunk Low 'Fruity Pebbles'", price: "$59.00", category: "Dunk", folder: "dunk-fruit y pebbles" },
+        { name: "Nike Dunk Low 'Game Royal'", price: "$59.00", category: "Dunk", folder: "dunk-gam e royal" },
+        { name: "Nike Dunk Low 'Grey Fog'", price: "$59.00", category: "Dunk", folder: "dunk-grey fog" },
+        { name: "Nike Dunk Low 'Kentucky'", price: "$59.00", category: "Dunk", folder: "dunk-kent ucky" },
+        { name: "Nike Dunk Low 'Light Bone'", price: "$59.00", category: "Dunk", folder: "dunk-light bone" },
+        { name: "Nike Dunk Low 'Light Orewood Brown'", price: "$59.00", category: "Dunk", folder: "dunk-Ligh t Orewood Brown" },
+        { name: "Nike Dunk Low 'Miami Hurricanes'", price: "$59.00", category: "Dunk", folder: "dunk-mia mi hurricanes" },
+        { name: "Nike Dunk Low RETRO SP 'ST. JOHN'S'", price: "$59.00", category: "Dunk", folder: "dunk-RET RO SP 'ST. JOHN'S'" },
+        { name: "Nike Dunk SB x Travis Scott", price: "$59.00", category: "Dunk", folder: "dunk-sb x Travis Scott" },
+        { name: "Nike Dunk Low 'Easter'", price: "$59.00", category: "Dunk", folder: "dunk-se easter" },
+        { name: "Nike Dunk Low SP 'Brazil'", price: "$59.00", category: "Dunk", folder: "dunk-sp brazil" },
+        { name: "Nike Dunk Low 'Syracuse'", price: "$59.00", category: "Dunk", folder: "dunk-syra cuse" },
+        { name: "Nike Dunk Low 'Triple Pink'", price: "$59.00", category: "Dunk", folder: "dunk-tripl e pink" },
+        { name: "Nike Dunk Low 'University Blue'", price: "$59.00", category: "Dunk", folder: "dunk-univ ersity blue" }
     ];
 
     function renderProducts() {
         const listContainer = document.getElementById('product-list');
         listContainer.innerHTML = '';
-        
-        products.filter(p => {
-            const matchesCat = currentCategory === 'All' || p.category === currentCategory;
-            return matchesCat && p.name.toLowerCase().includes(searchQuery.toLowerCase());
-        }).forEach((product, pIndex) => {
+        products.filter(p => (currentCategory === 'All' || p.category === currentCategory) && p.name.toLowerCase().includes(searchQuery.toLowerCase())).forEach((product, pIndex) => {
             const card = document.createElement('div');
             card.className = 'product-card';
-            
             let slidesHtml = '';
-            for(let i=1; i <= maxPossibleImages; i++) {
-                slidesHtml += `
-                    <div class="swiper-slide" id="slide-${pIndex}-${i}">
-                        <img src="images/${product.folder}/${i}${imgExt}" 
-                             onload="this.parentElement.classList.add('is-valid'); updateCounter(${pIndex})"
-                             onclick="openFullViewer('${product.folder}', ${i-1}, ${pIndex})">
-                    </div>`;
+            for(let i=1; i <= maxImg; i++) {
+                slidesHtml += `<div class="swiper-slide" id="s-${pIndex}-${i}"><img src="images/${product.folder}/${i}${imgExt}" onload="this.parentElement.classList.add('is-valid'); updateCounter(${pIndex})" onclick="openFullViewer('${product.folder}', ${i-1}, ${pIndex})"></div>`;
             }
-
-            card.innerHTML = `
-                <div class="swiper swiper-list-${pIndex}">
-                    <div class="swiper-wrapper">${slidesHtml}</div>
-                    <div class="img-counter" id="counter-${pIndex}">1 / 1</div>
-                    <div class="swiper-pagination"></div>
-                </div>
-                <div class="product-info">
-                    <div class="product-title">${product.name}</div>
-                    <div class="product-price">${product.price}</div>
-                    <a href="https://wa.me/${myPhone}?text=Order:${encodeURIComponent(product.name)}" target="_blank" class="order-btn">ORDER VIA WHATSAPP</a>
-                </div>
-            `;
+            card.innerHTML = `<div class="swiper swiper-list-${pIndex}"><div class="swiper-wrapper">${slidesHtml}</div><div class="img-counter" id="counter-${pIndex}">1 / 1</div><div class="swiper-pagination"></div></div><div class="product-info"><div class="product-title">${product.name}</div><div class="product-price">${product.price}</div><a href="https://wa.me/${myPhone}?text=Order:${encodeURIComponent(product.name)}" target="_blank" class="order-btn">ORDER VIA WHATSAPP</a></div>`;
             listContainer.appendChild(card);
-            
-            // 延迟初始化 Swiper 以确保图片检测完成
-            setTimeout(() => {
-                new Swiper(`.swiper-list-${pIndex}`, {
-                    pagination: { el: '.swiper-pagination' },
-                    on: { slideChange: function() { updateCounter(pIndex, this.activeIndex + 1); } }
-                });
-            }, 300);
+            setTimeout(() => { new Swiper(`.swiper-list-${pIndex}`, { pagination: { el: '.swiper-pagination' }, on: { slideChange: function() { updateCounter(pIndex, this.activeIndex + 1); } } }); }, 400);
         });
     }
 
-    // 核心逻辑：更新计数器，只计算加载成功的图片
     window.updateCounter = (pIndex, current = 1) => {
         const total = document.querySelectorAll(`.swiper-list-${pIndex} .is-valid`).length;
         const counterEl = document.getElementById(`counter-${pIndex}`);
@@ -163,33 +133,18 @@
         const total = document.querySelectorAll(`.swiper-list-${pIndex} .is-valid`).length;
         const viewerWrapper = document.querySelector('.swiper-viewer .swiper-wrapper');
         let viewerSlides = '';
-        for(let i=1; i <= total; i++) {
-            viewerSlides += `<div class="swiper-slide"><div class="swiper-zoom-container"><img src="images/${folder}/${i}${imgExt}"></div></div>`;
-        }
+        for(let i=1; i <= total; i++) viewerSlides += `<div class="swiper-slide"><div class="swiper-zoom-container"><img src="images/${folder}/${i}${imgExt}"></div></div>`;
         viewerWrapper.innerHTML = viewerSlides;
         document.getElementById('viewer-overlay').style.display = 'flex';
         document.body.style.overflow = 'hidden';
-        
-        new Swiper('.swiper-viewer', {
-            initialSlide: startIdx,
-            zoom: true,
-            on: { slideChange: function() { document.getElementById('viewer-counter').innerText = `${this.activeIndex + 1} / ${total}`; } }
-        });
+        new Swiper('.swiper-viewer', { initialSlide: startIdx, zoom: true, on: { slideChange: function() { document.getElementById('viewer-counter').innerText = `${this.activeIndex + 1} / ${total}`; } } });
         document.getElementById('viewer-counter').innerText = `${startIdx + 1} / ${total}`;
     };
 
-    // 其他逻辑保持不变
-    let currentCategory = 'All';
-    let searchQuery = '';
+    let currentCategory = 'All', searchQuery = '';
     document.getElementById('search-input').oninput = (e) => { searchQuery = e.target.value; renderProducts(); };
-    window.filterCat = (cat, el) => {
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        el.classList.add('active');
-        currentCategory = cat;
-        renderProducts();
-    };
+    window.filterCat = (cat, el) => { document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); currentCategory = cat; renderProducts(); };
     document.getElementById('viewer-close').onclick = () => { document.getElementById('viewer-overlay').style.display = 'none'; document.body.style.overflow = 'auto'; };
-    
     renderProducts();
 </script>
 </body>
