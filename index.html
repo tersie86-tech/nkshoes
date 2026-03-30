@@ -3,287 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NKshoes - Premium Sneakers Catalog</title>
+    <title>LJR NIKE - PREMIUM SHOP</title>
+    <!-- 引入轮播库样式 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <style>
         :root { --main-color: #000; --accent-color: #e41e31; --bg-gray: #f9f9f9; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: #fff; color: #111; -webkit-font-smoothing: antialiased; }
         
-        /* 顶部 */
-        .header { background: #fff; padding: 25px 0 15px; border-bottom: 1px solid #eee; text-align: center; }
-        .header h1 { margin: 0; font-size: 26px; font-weight: 900; letter-spacing: -1.5px; text-transform: uppercase; font-style: italic; }
-        .header p { margin: 5px 0 0; font-size: 12px; color: #888; font-weight: 600; text-transform: uppercase; }
-
-        .container { max-width: 500px; margin: 0 auto; padding: 15px 15px 100px; }
+        /* 顶部固定导航 */
+        .sticky-header { position: sticky; top: 0; z-index: 1000; background: #fff; border-bottom: 1px solid #eee; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .header { padding: 15px 0 5px; text-align: center; }
+        .header h1 { margin: 0; font-size: 24px; font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -1.5px; }
         
-        /* 商品卡片 */
-        .product-card { background: #fff; border-radius: 0px; overflow: hidden; margin-bottom: 40px; border-bottom: 1px solid #f0f0f0; text-align: left; }
+        /* 搜索框样式 */
+        .search-container { padding: 8px 15px; }
+        #search-input { width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 8px; font-size: 14px; outline: none; background: var(--bg-gray); box-sizing: border-box; }
         
-        /* 列表滑动的轮播区域 */
-        .swiper-list { width: 100%; aspect-ratio: 1/1; background: var(--bg-gray); position: relative; }
-        /* 提示可以点击放大 */
-        .swiper-list .swiper-slide img { width: 100%; height: 100%; object-fit: contain; cursor: zoom-in; }
-        .swiper-pagination-bullet-active { background: #000 !important; }
+        /* 分类标签样式 */
+        .category-nav { display: flex; justify-content: center; gap: 10px; padding: 5px 0 12px; }
+        .nav-item { font-size: 12px; font-weight: 800; text-transform: uppercase; cursor: pointer; color: #999; padding: 6px 16px; border-radius: 20px; transition: 0.3s; border: 1px solid transparent; }
+        .nav-item.active { color: #fff; background: #000; }
 
-        /* 图片计数器 (显示 1/4, 2/4) */
-        .img-counter { 
-            position: absolute; bottom: 15px; right: 15px; background: rgba(0,0,0,0.6); 
-            color: #fff; padding: 3px 10px; border-radius: 12px; font-size: 11px; z-index: 10; 
-        }
-
+        .container { max-width: 500px; margin: 0 auto; padding: 10px 15px 100px; }
+        
+        /* 商品卡片布局 */
+        .product-card { background: #fff; margin-bottom: 45px; border-bottom: 1px solid #f0f0f0; }
+        .swiper-list { width: 100%; aspect-ratio: 1/1; background: var(--bg-gray); position: relative; border-radius: 4px; overflow: hidden; }
+        .swiper-slide img { width: 100%; height: 100%; object-fit: contain; cursor: zoom-in; }
+        
+        /* 图片计数器 */
+        .img-counter { position: absolute; bottom: 12px; right: 12px; background: rgba(0,0,0,0.7); color: #fff; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; z-index: 10; }
+        
         .product-info { padding: 20px 0; }
-        .product-title { font-size: 18px; font-weight: 700; margin-bottom: 5px; color: #111; line-height: 1.2; text-transform: uppercase; }
+        .product-title { font-size: 17px; font-weight: 800; margin-bottom: 6px; color: #000; line-height: 1.3; text-transform: uppercase; min-height: 44px; }
         .product-price { color: var(--accent-color); font-size: 22px; font-weight: 900; margin-bottom: 15px; }
+        .order-btn { display: flex; align-items: center; justify-content: center; background-color: #000; color: #fff; text-decoration: none; padding: 16px 0; width: 100%; font-size: 15px; font-weight: 900; border-radius: 6px; text-transform: uppercase; }
 
-        .order-btn { 
-            display: flex; align-items: center; justify-content: center;
-            background-color: #000; color: #fff; text-decoration: none;
-            padding: 18px 0; width: 100%; font-size: 16px; font-weight: bold; 
-            border-radius: 4px; text-transform: uppercase; transition: 0.3s;
-        }
-        .order-btn:hover { background-color: #333; }
-        .features { font-size: 12px; color: #999; margin-top: 12px; text-align: center; }
-
-        /* =========================================
-           全屏图片查看器样式 (支持手势缩放)
-           ========================================= */
-        #viewer-overlay {
-            display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.95); justify-content: center; align-items: center;
-        }
-        
-        /* 查看器内部的 Swiper */
-        .swiper-viewer { width: 100%; height: 100%; }
-        .swiper-viewer .swiper-slide {
-            display: flex; align-items: center; justify-content: center;
-            overflow: hidden; /* 必须，防止放大溢出 */
-        }
-        
-        /* 支持捏合缩放的图片基础样式 */
-        .swiper-viewer .swiper-zoom-container img {
-            max-width: 100%; max-height: 100%; object-fit: contain;
-            transition: 0.3s;
-            cursor: zoom-out; /* 提示可以点击关闭 */
-        }
-
-        /* 查看器的顶部导航 (X 号和计数器) */
-        #viewer-top-bar {
-            position: absolute; top: 20px; left: 0; width: 100%; padding: 0 20px;
-            display: flex; justify-content: space-between; align-items: center;
-            z-index: 10002; color: #fff; font-size: 14px; box-sizing: border-box;
-        }
-        #viewer-close { font-size: 28px; font-weight: bold; cursor: pointer; }
+        /* 全屏图片查看器 (Zoom) */
+        #viewer-overlay { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: #000; flex-direction: column; }
+        .swiper-viewer { width: 100%; flex: 1; }
+        .swiper-viewer .swiper-zoom-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        #viewer-top-bar { padding: 40px 20px 10px; display: flex; justify-content: space-between; align-items: center; color: #fff; z-index: 10001; }
+        #viewer-close { font-size: 28px; cursor: pointer; padding: 5px 10px; }
+        #viewer-counter { font-size: 14px; font-weight: bold; }
     </style>
 </head>
 <body>
 
+<!-- 全屏查看组件 -->
 <div id="viewer-overlay">
     <div id="viewer-top-bar">
         <span id="viewer-counter">1 / 4</span>
-        <span id="viewer-close">&times;</span>
+        <span id="viewer-close">✕</span>
     </div>
     <div class="swiper swiper-viewer">
-        <div class="swiper-wrapper">
-            </div>
+        <div class="swiper-wrapper"></div>
     </div>
 </div>
 
-<div class="header">
-    <h1>NKshoes</h1>
-    <p>Premium Quality • Worldwide Shipping • US Direct</p>
+<!-- 顶部搜索与导航 -->
+<div class="sticky-header">
+    <div class="header"><h1>LJR NIKE</h1></div>
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="Search sneakers (e.g. Panda, Jordan 4)...">
+    </div>
+    <div class="category-nav">
+        <div class="nav-item active" onclick="filterCat('All', this)">All</div>
+        <div class="nav-item" onclick="filterCat('Dunk', this)">Dunk</div>
+        <div class="nav-item" onclick="filterCat('Jordan', this)">Air Jordan</div>
+    </div>
 </div>
 
-<div class="container" id="product-list">
-    </div>
+<div class="container">
+    <div id="product-list"></div>
+    <div id="no-results" style="display:none; text-align:center; padding:50px; color:#999;">No sneakers found matching your search.</div>
+</div>
 
+<!-- 引入轮播库脚本 -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
 <script>
-    const myPhone = "8618506001902"; // 你的 WhatsApp
+    const myPhone = "8618506001902";
 
-    // 根据你提供的文件夹截图生成的完整数据库
+    // 数据源：请确保 folder 名字与 GitHub 仓库 images/ 下的文件夹名完全一致
     const products = [
-        // Air Jordan 4
-        { name: "Air Jordan 4 'Black Cat'", price: "$145.00", folder: "Air Jordan 4_Black Cat" },
-        { name: "Air Jordan 4 'Laser'", price: "$145.00", folder: "Air Jordan 4_Laser" },
-        { name: "Air Jordan 4 'Navy'", price: "$145.00", folder: "Air Jordan 4_Navy" },
-        { name: "Air Jordan 4 'Pine Green'", price: "$150.00", folder: "Air Jordan 4_Pine Green" },
-        { name: "Air Jordan 4 OG 'Brick by Brick'", price: "$145.00", folder: "Air Jordan 4 OG _Brick by Brick_ Bl..." },
-        { name: "Air Jordan 4 Retro 'Imperial Purple'", price: "$145.00", folder: "Air Jordan 4 Retro _Imperial Purple" },
-        { name: "Air Jordan 4 Retro OG SP Undefeated", price: "$160.00", folder: "Air Jordan 4 Retro OG SP Undefea..." },
-        { name: "Air Jordan 4 Retro White Cement", price: "$145.00", folder: "Air Jordan 4 Retro White Cement" },
-        { name: "Air Jordan 4 'Thunder'", price: "$145.00", folder: "Air Jordan 4 Thunder" },
-        { name: "Air Jordan 4 'White Thunder' Retro", price: "$145.00", folder: "Air Jordan 4 White Thunder Retro" },
-        // Air Jordan 5
-        { name: "Air Jordan 5 'Wolf Grey'", price: "$140.00", folder: "Air Jordan 5_Wolf Grey" },
-        { name: "Air Jordan 5 'GRAPE'", price: "$140.00", folder: "Air Jordan 5 GRAPE" },
-        { name: "Air Jordan 5 Retro 'White Metallic'", price: "$140.00", folder: "Air Jordan 5 Retro _White Metallic" },
-        { name: "Air Jordan 5 Retro SP 'Dawn'", price: "$145.00", folder: "Air Jordan 5 Retro SP_Dawn" },
-        // Air Jordan 11
-        { name: "Air Jordan 11 'RARE AIR'", price: "$155.00", folder: "Air Jordan 11 _RARE AIR" },
-        { name: "Air Jordan 11 Low 'University Blue'", price: "$140.00", folder: "Air Jordan 11 Low _University Blue" },
-        { name: "Air Jordan 11 Retro 'Gamma Blue'", price: "$155.00", folder: "Air Jordan 11 Retro _Gamma Blue" },
-        { name: "Air Jordan 11 Retro 'Cap and Gown'", price: "$155.00", folder: "Air Jordan 11 Retro Cap and Gown" },
-        // Dunk
-        { name: "Nike Dunk Low 'Panda'", price: "$110.00", folder: "dunk-panda" },
-        { name: "Nike Dunk SB 'J-PACK CHICAGO'", price: "$125.00", folder: "dunk- SB 'J-PACK CHICAGO'" },
-        { name: "Nike Dunk Low 'Argon' 2022", price: "$115.00", folder: "dunk-argon 2022" },
-        { name: "Nike Dunk Low 'Chunky Dunky'", price: "$140.00", folder: "dunk-chun kydunky" },
-        { name: "Nike Dunk Low 'Coast'", price: "$115.00", folder: "dunk-Coast" },
-        { name: "Nike Dunk Low 'Fruity Pebbles'", price: "$120.00", folder: "dunk-fruit y pebbles" },
-        { name: "Nike Dunk Low 'Game Royal'", price: "$115.00", folder: "dunk-gam e royal" },
-        { name: "Nike Dunk Low 'Grey Fog'", price: "$115.00", folder: "dunk-grey fog" },
-        { name: "Nike Dunk Low 'Kentucky'", price: "$115.00", folder: "dunk-kent ucky" },
-        { name: "Nike Dunk Low 'Light Bone'", price: "$115.00", folder: "dunk-light bone" },
-        { name: "Nike Dunk Low 'Light Orewood Brown'", price: "$115.00", folder: "dunk-Ligh t Orewood Brown" },
-        { name: "Nike Dunk Low 'Miami Hurricanes'", price: "$115.00", folder: "dunk-mia mi hurricanes" },
-        { name: "Nike Dunk Low RETRO SP 'ST. JOHN'S'", price: "$115.00", folder: "dunk-RET RO SP 'ST. JOHN'S'" },
-        { name: "Nike Dunk SB x Travis Scott", price: "$150.00", folder: "dunk-sb x Travis Scott" },
-        { name: "Nike Dunk Low 'Easter'", price: "$115.00", folder: "dunk-se easter" },
-        { name: "Nike Dunk Low SP 'Brazil'", price: "$120.00", folder: "dunk-sp brazil" },
-        { name: "Nike Dunk Low 'Syracuse'", price: "$120.00", folder: "dunk-syra cuse" },
-        { name: "Nike Dunk Low 'Triple Pink'", price: "$110.00", folder: "dunk-tripl e pink" },
-        { name: "Nike Dunk Low 'University Blue'", price: "$115.00", folder: "dunk-univ ersity blue" }
+        // Jordan 系列 - 价格 $199
+        { name: "Air Jordan 4 'Black Cat'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4_Black Cat" },
+        { name: "Air Jordan 4 'Laser'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4_Laser" },
+        { name: "Air Jordan 4 'Navy'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4_Navy" },
+        { name: "Air Jordan 4 'Pine Green'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4_Pine Green" },
+        { name: "Air Jordan 4 OG 'Brick by Brick'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 OG _Brick by Brick_ Bl..." },
+        { name: "Air Jordan 4 Retro 'Imperial Purple'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 Retro _Imperial Purple" },
+        { name: "Air Jordan 4 Retro White Cement", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 Retro White Cement" },
+        { name: "Air Jordan 4 'Thunder'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 Thunder" },
+        { name: "Air Jordan 4 'White Thunder' Retro", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 White Thunder Retro" },
+        { name: "Air Jordan 5 'Wolf Grey'", price: "$199.00", category: "Jordan", folder: "Air Jordan 5_Wolf Grey" },
+        { name: "Air Jordan 5 'GRAPE'", price: "$199.00", category: "Jordan", folder: "Air Jordan 5 GRAPE" },
+        { name: "Air Jordan 5 Retro SP 'Dawn'", price: "$199.00", category: "Jordan", folder: "Air Jordan 5 Retro SP_Dawn" },
+        { name: "Air Jordan 11 'RARE AIR'", price: "$199.00", category: "Jordan", folder: "Air Jordan 11 _RARE AIR" },
+        { name: "Air Jordan 11 Low 'University Blue'", price: "$199.00", category: "Jordan", folder: "Air Jordan 11 Low _University Blue" },
+        { name: "Air Jordan 11 Retro 'Gamma Blue'", price: "$199.00", category: "Jordan", folder: "Air Jordan 11 Retro _Gamma Blue" },
+        { name: "Air Jordan 11 Retro 'Cap and Gown'", price: "$199.00", category: "Jordan", folder: "Air Jordan 11 Retro Cap and Gown" },
+        // Dunk 系列 - 价格 $59
+        { name: "Nike Dunk Low 'Panda'", price: "$59.00", category: "Dunk", folder: "dunk-panda" },
+        { name: "Nike Dunk SB 'J-PACK CHICAGO'", price: "$59.00", category: "Dunk", folder: "dunk- SB 'J-PACK CHICAGO'" },
+        { name: "Nike Dunk Low 'Argon' 2022", price: "$59.00", category: "Dunk", folder: "dunk-argon 2022" },
+        { name: "Nike Dunk Low 'Chunky Dunky'", price: "$59.00", category: "Dunk", folder: "dunk-chun kydunky" },
+        { name: "Nike Dunk Low 'Coast'", price: "$59.00", category: "Dunk", folder: "dunk-Coast" },
+        { name: "Nike Dunk Low 'Grey Fog'", price: "$59.00", category: "Dunk", folder: "dunk-grey fog" },
+        { name: "Nike Dunk Low 'Kentucky'", price: "$59.00", category: "Dunk", folder: "dunk-kent ucky" },
+        { name: "Nike Dunk Low 'Light Bone'", price: "$59.00", category: "Dunk", folder: "dunk-light bone" },
+        { name: "Nike Dunk Low 'Miami Hurricanes'", price: "$59.00", category: "Dunk", folder: "dunk-mia mi hurricanes" },
+        { name: "Nike Dunk SB x Travis Scott", price: "$59.00", category: "Dunk", folder: "dunk-sb x Travis Scott" },
+        { name: "Nike Dunk Low SP 'Brazil'", price: "$59.00", category: "Dunk", folder: "dunk-sp brazil" },
+        { name: "Nike Dunk Low 'Syracuse'", price: "$59.00", category: "Dunk", folder: "dunk-syra cuse" },
+        { name: "Nike Dunk Low 'Triple Pink'", price: "$59.00", category: "Dunk", folder: "dunk-tripl e pink" },
+        { name: "Nike Dunk Low 'University Blue'", price: "$59.00", category: "Dunk", folder: "dunk-univ ersity blue" }
     ];
 
-    const listContainer = document.getElementById('product-list');
-    
-    // 全屏查看器的 Swiper 实例变量
-    let viewerSwiper = null;
+    let currentCategory = 'All';
+    let searchQuery = '';
 
-    // 1. 生成商品列表
-    products.forEach((product, pIndex) => {
-        const card = document.createElement('div');
-        card.className = 'product-card';
+    // 核心渲染函数
+    function render() {
+        const container = document.getElementById('product-list');
+        container.innerHTML = '';
         
-        // 生成 4 张图的路径 (假设都是.jpg)
-        const imgPaths = [1, 2, 3, 4].map(num => `images/${product.folder}/${num}.jpg`);
-        
-        // 生成滑动的幻灯片 HTML，增加了 data- 属性用于点击时传递信息
-        const slidesHtml = imgPaths.map((img, iIndex) => `
-            <div class="swiper-slide">
-                <img src="${img}" onerror="this.src='https://via.placeholder.com/600x600?text=NKshoes'" class="zoom-trigger" data-product-index="${pIndex}" data-image-index="${iIndex}">
-            </div>
-        `).join('');
+        const filtered = products.filter(p => 
+            (currentCategory === 'All' || p.category === currentCategory) && 
+            p.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
 
-        const message = encodeURIComponent(`Hi, I want to order:\n\nItem: ${product.name}\nPrice: ${product.price}`);
-        const waLink = `https://wa.me/${myPhone}?text=${message}`;
-
-        card.innerHTML = `
-            <div class="swiper swiper-list swiper-list-${pIndex}">
-                <div class="swiper-wrapper">
-                    ${slidesHtml}
-                </div>
-                <div class="swiper-pagination"></div>
-                <div class="img-counter">1 / 4</div>
-            </div>
-            
-            <div class="product-info">
-                <div class="product-title">${product.name}</div>
-                <div class="product-price">${product.price}</div>
-                <a href="${waLink}" target="_blank" class="order-btn">
-                    ORDER VIA WHATSAPP
-                </a>
-                <div class="features">PREMIUM BATCH • FAST SHIPPING • US DIRECT</div>
-            </div>
-        `;
-        listContainer.appendChild(card);
-        
-        // 初始化列表的滑动
-        new Swiper(`.swiper-list-${pIndex}`, {
-            loop: false, // 通常列表不用循环
-            pagination: { el: '.swiper-pagination', clickable: true },
-            on: {
-                slideChange: function () {
-                    // 更新 1/4 计数器
-                    const counter = this.el.querySelector('.img-counter');
-                    if(counter) counter.innerText = `${this.activeIndex + 1} / 4`;
-                }
-            }
-        });
-    });
-
-    // =========================================
-    // 2. 处理点击放大逻辑
-    // =========================================
-    const viewerOverlay = document.getElementById('viewer-overlay');
-    const viewerCounter = document.getElementById('viewer-counter');
-    const viewerWrapper = document.querySelector('.swiper-viewer .swiper-wrapper');
-
-    // 监听所有列表图片的点击
-    document.querySelectorAll('.zoom-trigger').forEach(img => {
-        img.addEventListener('click', function() {
-            const pIndex = this.getAttribute('data-product-index'); // 拿这双鞋
-            const startImgIndex = this.getAttribute('data-image-index'); // 拿这张图是第几张
-
-            openFullViewer(pIndex, startImgIndex);
-        });
-    });
-
-    function openFullViewer(pIndex, startImgIndex) {
-        // 拿到具体这双鞋子的所有图片路径
-        const targetProduct = products[pIndex];
-        const productImages = [1, 2, 3, 4].map(num => `images/${targetProduct.folder}/${num}.jpg`);
-
-        // 清空之前的幻灯片
-        viewerWrapper.innerHTML = '';
-
-        // 生成针对全屏查看器优化、支持 Zoom 的 HTML
-        const viewerSlidesHtml = productImages.map(img => `
-            <div class="swiper-slide">
-                <div class="swiper-zoom-container">
-                    <img src="${img}" onerror="this.src='https://via.placeholder.com/600x600?text=NKshoes'">
-                </div>
-            </div>
-        `).join('');
-        viewerWrapper.innerHTML = viewerSlidesHtml;
-
-        // 初始化查看器的计数器
-        viewerCounter.innerText = `${parseInt(startImgIndex) + 1} / 4`;
-
-        // 显示查看器
-        viewerOverlay.style.display = 'flex';
-        document.body.style.overflow = 'hidden'; // 禁止背景列表滑动
-
-        // 初始化或更新 Swiper 查看器实例
-        if (viewerSwiper) { viewerSwiper.destroy(); } // 销毁旧的
-
-        viewerSwiper = new Swiper('.swiper-viewer', {
-            loop: true, // 全屏通常允许循环滑
-            initialSlide: startImgIndex, // 打开时定位到点击的那张
-
-            // 重要：激活 Zoom 功能
-            zoom: {
-                maxRatio: 3, // 最大允许放大 3 倍
-                minRatio: 1, // 最小允许缩小到原大
-                toggle: true // 支持双击快速缩放
-            },
-            
-            on: {
-                // 滑动图片时更新顶部计数器
-                slideChange: function () {
-                    viewerCounter.innerText = `${this.realIndex + 1} / 4`;
-                }
-            }
-        });
-    }
-
-    // 关闭查看器逻辑
-    function closeViewer() {
-        viewerOverlay.style.display = 'none';
-        document.body.style.overflow = 'auto'; // 恢复背景列表滑动
-        if (viewerSwiper) viewerSwiper.zoom.out(); // 退出时重置缩放
-    }
-
-    document.getElementById('viewer-close').addEventListener('click', closeViewer);
-    // 点击图片以外的空白区域也关闭
-    viewerWrapper.addEventListener('click', (e) => {
-        // 如果点击的不是图片本身且不是缩放容器
-        if (e.target.tagName !== 'IMG' && !e.target.closest('.swiper-zoom-container')) {
-            closeViewer();
+        if(filtered.length === 0) {
+            document.getElementById('no-results').style.display = 'block';
+            return;
         }
-    });
-</script>
+        document.getElementById('no-results').style.display = 'none';
 
+        filtered.forEach((p, pIdx) => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            
+            // 默认探测 1.jpg 到 4.jpg
+            let slidesHtml = '';
+            for(let i=1; i<=4; i++) {
+                const imgSrc = `images/${p.folder}/${i}.jpg`;
+                slidesHtml += `
+                    <div class="swiper-slide">
+                        <img src="${imgSrc}" onerror="this.src='https://via.placeholder.com/600x600?text=Image+Loading...'" onclick="openViewer('${p.folder}', ${i-1})">
+                    </div>`;
+            }
+
+            card.innerHTML = `
+                <div class="swiper swiper-list-${pIdx}">
+                    <div class="swiper-wrapper">${slidesHtml}</div>
+                    <div class="img-counter">1 / 4</div>
+                    <div class="swiper-pagination"></div>
+                </div>
+                <div class="product-info">
+                    <div class="product-title">${p.name}</div>
+                    <div class="product-price">${p.price}</div>
+                    <a href="https://wa.me/${myPhone}?text=Hi, I want to order: ${encodeURIComponent(p.name)}" target="_blank" class="order-btn">
+                        ORDER VIA WHATSAPP
+                    </a>
+                </div>
+            `;
+            container.appendChild(card);
+
+            // 初始化列表滑动
+            new Swiper(`.swiper-list-${pIdx}`, {
+                pagination: { el: '.swiper-pagination', clickable: true },
+                on: {
+                    slideChange: function () {
+                        card.querySelector('.img-counter').innerText = `${this.activeIndex + 1} / 4`;
+                    }
+                }
+            });
+        });
+    }
+
+    // 全屏查看器逻辑
+    let viewerSwiper = null;
+    window.openViewer = (folder, startIndex) => {
+        const overlay = document.getElementById('viewer-overlay');
+        const wrapper = document.querySelector('.swiper-viewer .swiper-wrapper');
+        wrapper.innerHTML = '';
+
+        // 生成全屏幻灯片
+        for(let i=1; i<=4; i++) {
+            wrapper.innerHTML += `
+                <div class="swiper-slide">
+                    <div class="swiper-zoom-container">
+                        <img src="images/${folder}/${i}.jpg">
+                    </div>
+                </div>`;
+        }
+
+        overlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // 禁止背景滚动
+
+        if(viewerSwiper) viewerSwiper.destroy();
+        viewerSwiper = new Swiper('.swiper-viewer', {
+            initialSlide: startIndex,
+            zoom: { maxRatio: 3, minRatio: 1, toggle: true },
+            on: {
+                slideChange: function() {
+                    document.getElementById('viewer-counter').innerText = `${this.activeIndex + 1} / 4`;
+                }
+            }
+        });
+        document.getElementById('viewer-counter').innerText = `${startIndex + 1} / 4`;
+    };
+
+    // 关闭查看器
+    document.getElementById('viewer-close').onclick = () => {
+        document.getElementById('viewer-overlay').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    };
+
+    // 搜索监听
+    document.getElementById('search-input').addEventListener('input', (e) => {
+        searchQuery = e.target.value;
+        render();
+    });
+
+    // 分类筛选
+    window.filterCat = (cat, el) => {
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        el.classList.add('active');
+        currentCategory = cat;
+        render();
+    };
+
+    // 初始渲染
+    render();
+</script>
 </body>
 </html>
