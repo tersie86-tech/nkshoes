@@ -11,12 +11,11 @@
             --text-main: #111; --text-muted: #666; --card-bg: #fff;
         }
 
-        /* 恢复深色模式及 Logo 反色功能 */
         @media (prefers-color-scheme: dark) {
             :root { --bg-gray: #0a0a0a; --text-main: #f5f5f5; --text-muted: #888; --card-bg: #151515; }
             body { background-color: #000; }
             .sticky-header { background: rgba(0, 0, 0, 0.85) !important; border-bottom-color: #222 !important; }
-            #shop-logo { filter: invert(1) brightness(2); } /* Logo 反色核心代码 */
+            #shop-logo { filter: invert(1) brightness(2); }
             #search-input { background: #222; color: #fff; }
             .trust-bar { background: #111 !important; border-bottom-color: #222 !important; }
             .nav-item { border-color: #333; }
@@ -58,7 +57,7 @@
         .order-btn { flex: 2; background: #000; color: #fff; text-decoration: none; padding: 14px; font-size: 13px; font-weight: 800; border-radius: 10px; text-align: center; }
         .qc-btn { flex: 1; background: transparent; color: var(--text-main); border: 1.5px solid var(--text-main); text-decoration: none; padding: 14px; font-size: 12px; font-weight: 800; border-radius: 10px; text-align: center; }
 
-        /* 放大查看器核心样式 */
+        /* 查看器层级 */
         .overlay { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background: #000; flex-direction: column; align-items: center; justify-content: center; }
         .overlay-close { position: absolute; top: 40px; right: 25px; color: #fff; font-size: 32px; cursor: pointer; z-index: 10001; padding: 10px; }
         #viewer-counter { position: absolute; top: 50px; left: 25px; color: #fff; font-size: 14px; font-weight: 600; z-index: 10001; }
@@ -72,7 +71,7 @@
 </head>
 <body>
 
-<!-- 尺寸表蒙层 -->
+<!-- 尺码表：补全了 NIKE SIZE CHART 标题 -->
 <div id="size-guide-modal" class="overlay" onclick="this.style.display='none'">
     <div class="overlay-close">✕</div>
     <div class="modal-content" onclick="event.stopPropagation()" style="width: 92%; max-width: 450px; background: #fff; border-radius: 15px; overflow: hidden;">
@@ -81,7 +80,7 @@
     </div>
 </div>
 
-<!-- 图片查看器蒙层 -->
+<!-- 查看器蒙层 -->
 <div id="viewer-overlay" class="overlay">
     <div class="overlay-close" onclick="closeViewer()">✕</div>
     <div id="viewer-counter"></div>
@@ -121,7 +120,6 @@
     document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'});
     const myPhone = "8618506001902";
     
-    // 保持你原本的数据列表
     const products = [
         { name: "Air Jordan 4 'Black Cat'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 _Black Cat", tag: "HOT" },
         { name: "Air Jordan 4 'Laser'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 _Laser" },
@@ -175,11 +173,15 @@
         filtered.forEach((p, pIdx) => {
             const card = document.createElement('div');
             card.className = 'product-card';
+            // 修复点：在每个 img 上明确绑定带参数的 openViewer
             card.innerHTML = `
                 <div class="swiper swiper-list-${pIdx}">
                     ${p.tag ? `<div class="badge">${p.tag}</div>` : ''}
                     <div class="swiper-wrapper">
-                        ${[1,2,3,4].map(i => `<div class="swiper-slide"><img src="images/${p.folder}/${i}.jpg" loading="lazy" onclick="openViewer('${p.folder}', ${i-1})"></div>`).join('')}
+                        ${[1,2,3,4].map(i => `
+                            <div class="swiper-slide">
+                                <img src="images/${p.folder}/${i}.jpg" loading="lazy" onclick="openViewer('${p.folder}', ${i-1})">
+                            </div>`).join('')}
                     </div>
                     <div class="img-counter">1 / 4</div>
                 </div>
@@ -202,7 +204,7 @@
         });
     }
 
-    // 核心修复逻辑
+    // 修复：开启 Zoom 功能并确保图片加载
     window.openViewer = (folder, startIndex) => {
         const overlay = document.getElementById('viewer-overlay');
         const mount = document.getElementById('viewer-mount');
@@ -211,8 +213,10 @@
             <div class="swiper swiper-viewer" style="width: 100%; height: 100%;">
                 <div class="swiper-wrapper">
                     ${[1,2,3,4].map(i => `
-                        <div class="swiper-slide" style="display:flex;align-items:center;justify-content:center;">
-                            <img src="images/${folder}/${i}.jpg" style="max-width:100%;max-height:100%;object-fit:contain;">
+                        <div class="swiper-slide">
+                            <div class="swiper-zoom-container">
+                                <img src="images/${folder}/${i}.jpg">
+                            </div>
                         </div>`).join('')}
                 </div>
             </div>
@@ -224,6 +228,9 @@
         setTimeout(() => {
             vSwiper = new Swiper('.swiper-viewer', {
                 initialSlide: startIndex,
+                zoom: true, // 开启双指缩放
+                observer: true,
+                observeParents: true,
                 on: { 
                     slideChange: function() { 
                         document.getElementById('viewer-counter').innerText = `${this.activeIndex + 1} / 4`; 
@@ -231,7 +238,7 @@
                 }
             });
             document.getElementById('viewer-counter').innerText = `${startIndex + 1} / 4`;
-        }, 50);
+        }, 80);
     };
 
     window.closeViewer = () => {
