@@ -11,12 +11,12 @@
             --text-main: #111; --text-muted: #666; --card-bg: #fff;
         }
 
-        /* 深色模式适配 - 包含 Logo 反色逻辑 */
+        /* 深色模式适配 */
         @media (prefers-color-scheme: dark) {
             :root { --bg-gray: #0a0a0a; --text-main: #f5f5f5; --text-muted: #888; --card-bg: #151515; }
             body { background-color: #000; }
             .sticky-header { background: rgba(0, 0, 0, 0.85) !important; border-bottom-color: #222 !important; }
-            #shop-logo { filter: invert(1) brightness(2); mix-blend-mode: normal !important; }
+            #shop-logo { filter: invert(1) brightness(2); }
             #search-input { background: #222; color: #fff; }
             .trust-bar { background: #111 !important; border-bottom-color: #222 !important; }
             .nav-item { border-color: #333; }
@@ -91,10 +91,10 @@
 </div>
 
 <!-- 放大查看器 -->
-<div id="viewer-overlay" class="overlay" onclick="closeViewer()">
+<div id="viewer-overlay" class="overlay">
     <div class="overlay-close" onclick="closeViewer()">✕</div>
     <div id="viewer-counter">1 / 4</div>
-    <div class="swiper swiper-viewer" style="width: 100%; height: 85%;" onclick="event.stopPropagation()">
+    <div class="swiper swiper-viewer" style="width: 100%; height: 85%;">
         <div class="swiper-wrapper"></div>
     </div>
 </div>
@@ -132,7 +132,6 @@
     document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'});
     const myPhone = "8618506001902";
     
-    // 完整数据列表已恢复
     const products = [
         { name: "Air Jordan 4 'Black Cat'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 _Black Cat", tag: "HOT" },
         { name: "Air Jordan 4 'Laser'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 _Laser" },
@@ -216,32 +215,57 @@
         });
     }
 
+    // 核心修复函数
     window.openViewer = (folder, startIndex) => {
         const overlay = document.getElementById('viewer-overlay');
         const wrapper = overlay.querySelector('.swiper-wrapper');
-        if (vSwiper) { vSwiper.destroy(true, true); vSwiper = null; }
         
-        const timestamp = Date.now();
-        wrapper.innerHTML = [1,2,3,4].map(i => `<div class="swiper-slide" style="display:flex;align-items:center;justify-content:center;"><img src="images/${folder}/${i}.jpg?v=${timestamp}" style="max-width:100%;max-height:100%;object-fit:contain;"></div>`).join('');
+        // 1. 彻底清空并重置内容
+        wrapper.innerHTML = '';
+        if (vSwiper) {
+            vSwiper.destroy(true, true);
+            vSwiper = null;
+        }
+        
+        // 2. 注入新内容，加入随机参数防止某些浏览器缓存导致的空白
+        const cacheBuster = Date.now();
+        wrapper.innerHTML = [1,2,3,4].map(i => `
+            <div class="swiper-slide" style="display:flex;align-items:center;justify-content:center;">
+                <img src="images/${folder}/${i}.jpg?v=${cacheBuster}" style="max-width:100%;max-height:100%;object-fit:contain;">
+            </div>`).join('');
+        
+        // 3. 先显现容器，再初始化
         overlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
 
+        // 4. 增加一点延迟，确保 display: flex 后的容器尺寸已被浏览器正确计算
         setTimeout(() => {
             vSwiper = new Swiper('.swiper-viewer', {
                 initialSlide: startIndex,
                 observer: true,
                 observeParents: true,
-                on: { slideChange: function() { document.getElementById('viewer-counter').innerText = `${this.activeIndex + 1} / 4`; } }
+                on: { 
+                    slideChange: function() { 
+                        document.getElementById('viewer-counter').innerText = `${this.activeIndex + 1} / 4`; 
+                    } 
+                }
             });
+            // 5. 强制触发一次更新
             vSwiper.update();
             document.getElementById('viewer-counter').innerText = `${startIndex + 1} / 4`;
-        }, 50);
+        }, 100);
     };
 
     window.closeViewer = () => {
-        document.getElementById('viewer-overlay').style.display = 'none';
+        const overlay = document.getElementById('viewer-overlay');
+        overlay.style.display = 'none';
         document.body.style.overflow = 'auto';
-        if (vSwiper) { vSwiper.destroy(true, true); vSwiper = null; }
+        
+        // 关闭时彻底销毁 Swiper 实例，释放内存和占用
+        if (vSwiper) {
+            vSwiper.destroy(true, true);
+            vSwiper = null;
+        }
     };
 
     function updateNav() {
@@ -252,7 +276,8 @@
     document.getElementById('search-input').addEventListener('input', (e) => { searchQuery = e.target.value; render(); });
     window.filterCat = (cat) => { currentCategory = cat; updateNav(); render(); };
     
-    updateNav(); render();
+    updateNav(); 
+    render();
 </script>
 </body>
 </html>
