@@ -12,10 +12,18 @@
             --safe-top: env(safe-area-inset-top);
         }
 
+        /* 深色模式适配 */
         @media (prefers-color-scheme: dark) {
             :root { --bg-gray: #0a0a0a; --text-main: #f5f5f5; --text-muted: #888; --card-bg: #151515; }
             body { background-color: #000; }
             .sticky-header { background: rgba(0, 0, 0, 0.85) !important; border-bottom-color: #222 !important; }
+            
+            /* 关键修复：让黑色 Logo 在深色模式下变白 */
+            #shop-logo { 
+                filter: invert(1) brightness(1.5); 
+                mix-blend-mode: normal !important; 
+            }
+            
             #search-input { background: #222; color: #fff; }
             .trust-bar { background: #111 !important; border-bottom-color: #222 !important; }
             #size-guide-modal .modal-content { background: #151515; color: #fff; }
@@ -34,7 +42,7 @@
             border-bottom: 0.5px solid rgba(0,0,0,0.05);
         }
         .header { padding: 12px 0; display: flex; justify-content: center; align-items: center; position: relative; }
-        #shop-logo { width: 110px; mix-blend-mode: multiply; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.02)); }
+        #shop-logo { width: 110px; mix-blend-mode: multiply; transition: filter 0.3s ease; }
         
         .online-status { position: absolute; right: 20px; font-size: 10px; color: #25D366; font-weight: 700; display: flex; align-items: center; gap: 4px; }
         .online-dot { width: 6px; height: 6px; background: #25D366; border-radius: 50%; animation: blink 1.5s infinite; }
@@ -72,21 +80,19 @@
         .btn-group { display: flex; gap: 8px; }
         .order-btn { flex: 2; background: #000; color: #fff; text-decoration: none; padding: 14px; font-size: 13px; font-weight: 800; border-radius: 10px; text-align: center; }
         .qc-btn { flex: 1; background: transparent; color: var(--text-main); border: 1.5px solid var(--text-main); text-decoration: none; padding: 14px; font-size: 12px; font-weight: 800; border-radius: 10px; text-align: center; }
-        .order-btn:active, .qc-btn:active { transform: scale(0.96); }
 
         /* 弹窗样式 */
         .overlay { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); flex-direction: column; align-items: center; justify-content: center;}
         .overlay-close { position: absolute; top: 40px; right: 20px; color: #fff; font-size: 24px; cursor: pointer; }
 
-        .modal-content { width: 90%; max-width: 400px; background: #fff; border-radius: 15px; overflow: hidden; }
+        .modal-content { width: 92%; max-width: 450px; background: #fff; border-radius: 15px; overflow: hidden; }
         .modal-content img { width: 100%; display: block; }
 
         .swiper-viewer { width: 100%; height: 100%; }
-        .swiper-viewer .swiper-slide { display: flex; align-items: center; justify-content: center; }
         .swiper-viewer img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
         .fab-group { position: fixed; bottom: 25px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; }
-        .fab { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); border: none; cursor: pointer; background: #fff; font-weight: 900; font-size: 12px;}
+        .fab { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); border: none; cursor: pointer; background: #fff; font-weight: 900; font-size: 12px; color:#000; }
         .fab-whatsapp { background: #25D366; }
 
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
@@ -95,14 +101,16 @@
 </head>
 <body>
 
-<!-- Size 表弹窗修复 -->
+<!-- Size 表弹窗 -->
 <div id="size-guide-modal" class="overlay" onclick="this.style.display='none'">
     <div class="overlay-close">✕</div>
     <div class="modal-content" onclick="event.stopPropagation()">
-        <div style="padding:15px; font-weight:900; text-align:center; border-bottom:1px solid #eee; color:#000">NIKE SIZE CHART</div>
-        <!-- 换了一个高清晰且加载稳定的图片链接 -->
-        <img src="https://img.ltwebstatic.com/images3_spmp/2023/06/15/1686811440a35965158223d6a4571994808c1c4f52.jpg" alt="Size Guide">
-        <div style="padding:12px; font-size:11px; color:#888; text-align:center">Check your CM/JP size for the best fit.</div>
+        <div style="padding:15px; font-weight:900; text-align:center; border-bottom:1px solid #eee; color:#000; font-size: 16px;">NIKE SIZE CHART</div>
+        <!-- 请确保图片上传后命名为 size-guide.jpg -->
+        <img src="size-guide.jpg" alt="Size Guide">
+        <div style="padding:18px; font-size:13px; color:#e41e31; text-align:center; font-weight: 800; background: #fff0f0; line-height: 1.4;">
+            💡 TIP: If you have wide feet, we recommend going up at least half a size.
+        </div>
     </div>
 </div>
 
@@ -152,6 +160,7 @@
 <script>
     document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'});
     const myPhone = "8618506001902";
+    
     const products = [
         { name: "Air Jordan 4 'Black Cat'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 _Black Cat", tag: "HOT" },
         { name: "Air Jordan 4 'Laser'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 _Laser" },
@@ -235,11 +244,11 @@
     window.openViewer = (folder, startIndex) => {
         const overlay = document.getElementById('viewer-overlay');
         const wrapper = document.querySelector('.swiper-viewer .swiper-wrapper');
-        wrapper.innerHTML = [1,2,3,4].map(i => `<div class="swiper-slide"><div class="swiper-zoom-container"><img src="images/${folder}/${i}.jpg"></div></div>`).join('');
+        wrapper.innerHTML = [1,2,3,4].map(i => `<div class="swiper-slide"><img src="images/${folder}/${i}.jpg"></div>`).join('');
         overlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
         if(viewerSwiper) viewerSwiper.destroy(true, true);
-        viewerSwiper = new Swiper('.swiper-viewer', { initialSlide: startIndex, zoom: true, on: { slideChange: function() { document.getElementById('viewer-counter').innerText = `${this.activeIndex + 1} / 4`; } } });
+        viewerSwiper = new Swiper('.swiper-viewer', { initialSlide: startIndex, on: { slideChange: function() { document.getElementById('viewer-counter').innerText = `${this.activeIndex + 1} / 4`; } } });
     };
 
     document.getElementById('search-input').addEventListener('input', (e) => { searchQuery = e.target.value; render(); });
