@@ -11,60 +11,39 @@
             --text-main: #111; --text-muted: #666; --card-bg: #fff;
         }
 
-        /* 🌙 深色模式自动适配逻辑 */
+        /* 深色模式适配 */
         @media (prefers-color-scheme: dark) {
             :root { --bg-gray: #0a0a0a; --text-main: #f5f5f5; --text-muted: #888; --card-bg: #151515; }
             body { background-color: #000; }
             .sticky-header { background: rgba(0, 0, 0, 0.85) !important; border-bottom-color: #222 !important; }
-            
-            /* 关键：让黑色的 Logo 和其中的小字在黑背景下反转成白色 */
-            #shop-logo { 
-                filter: invert(1) brightness(1.8); 
-                mix-blend-mode: normal !important; 
-            }
-            
+            #shop-logo { filter: invert(1) brightness(1.8); mix-blend-mode: normal !important; }
             #search-input { background: #222; color: #fff; }
             .trust-bar { background: #111 !important; border-bottom-color: #222 !important; }
             #size-guide-modal .modal-content { background: #151515; color: #fff; }
         }
 
-        body { 
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; 
-            margin: 0; padding: 0; background-color: var(--bg-gray); color: var(--text-main); 
-            -webkit-font-smoothing: antialiased; overflow-x: hidden;
-        }
+        body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg-gray); color: var(--text-main); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
 
-        /* 顶部导航 */
-        .sticky-header { 
-            position: sticky; top: 0; z-index: 1000; 
-            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-bottom: 0.5px solid rgba(0,0,0,0.05);
-        }
+        .sticky-header { position: sticky; top: 0; z-index: 1000; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 0.5px solid rgba(0,0,0,0.05); }
         .header { padding: 12px 0; display: flex; justify-content: center; align-items: center; position: relative; }
-        #shop-logo { width: 110px; mix-blend-mode: multiply; transition: filter 0.3s ease; }
+        #shop-logo { width: 110px; mix-blend-mode: multiply; }
         
         .online-status { position: absolute; right: 20px; font-size: 10px; color: #25D366; font-weight: 700; display: flex; align-items: center; gap: 4px; }
         .online-dot { width: 6px; height: 6px; background: #25D366; border-radius: 50%; animation: blink 1.5s infinite; }
 
+        /* 顶部信任栏 */
         .trust-bar { display: flex; justify-content: space-around; padding: 8px 10px; background: #fff; border-bottom: 1px solid #eee; font-size: 9px; font-weight: 800; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
 
         .search-container { padding: 10px 16px; position: relative; }
-        #search-input { 
-            width: 100%; padding: 12px 16px; border: none; border-radius: 10px; 
-            font-size: 14px; outline: none; background: rgba(0,0,0,0.05); box-sizing: border-box;
-        }
+        #search-input { width: 100%; padding: 12px 16px; border: none; border-radius: 10px; font-size: 14px; outline: none; background: rgba(0,0,0,0.05); box-sizing: border-box; }
 
         .category-nav { display: flex; justify-content: center; gap: 8px; padding: 5px 0 15px; }
-        .nav-item { font-size: 11px; font-weight: 700; cursor: pointer; color: var(--text-muted); padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(0,0,0,0.05); transition: 0.2s; }
+        .nav-item { font-size: 11px; font-weight: 700; cursor: pointer; color: var(--text-muted); padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(0,0,0,0.05); }
         .nav-item.active { color: #fff; background: #000; border-color: #000; }
 
-        /* 商品列表 */
+        /* 产品卡片样式 */
         .container { max-width: 500px; margin: 0 auto; padding: 10px 16px 100px; }
-        .product-card { 
-            background: var(--card-bg); margin-bottom: 25px; border-radius: 16px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03); overflow: hidden;
-            animation: fadeIn 0.5s ease both;
-        }
+        .product-card { background: var(--card-bg); margin-bottom: 25px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); overflow: hidden; animation: fadeIn 0.5s ease both; }
         
         .swiper-list { width: 100%; aspect-ratio: 1/1; position: relative; }
         .swiper-slide img { width: 100%; height: 100%; object-fit: cover; }
@@ -74,17 +53,22 @@
 
         .product-info { padding: 16px; }
         .product-title { font-size: 16px; font-weight: 800; margin-bottom: 4px; line-height: 1.3; }
-        .product-price { color: var(--accent-color); font-size: 20px; font-weight: 900; margin-bottom: 12px; }
+        .product-price { color: var(--accent-color); font-size: 20px; font-weight: 900; margin-bottom: 8px; }
+
+        /* 产品内部服务标签 */
+        .product-services { display: flex; gap: 10px; margin-bottom: 15px; }
+        .service-tag { font-size: 10px; color: #25D366; font-weight: 700; background: rgba(37, 211, 102, 0.1); padding: 2px 6px; border-radius: 4px; }
 
         .btn-group { display: flex; gap: 8px; }
         .order-btn { flex: 2; background: #000; color: #fff; text-decoration: none; padding: 14px; font-size: 13px; font-weight: 800; border-radius: 10px; text-align: center; }
         .qc-btn { flex: 1; background: transparent; color: var(--text-main); border: 1.5px solid var(--text-main); text-decoration: none; padding: 14px; font-size: 12px; font-weight: 800; border-radius: 10px; text-align: center; }
 
-        /* 弹窗样式 */
-        .overlay { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); flex-direction: column; align-items: center; justify-content: center;}
-        .overlay-close { position: absolute; top: 40px; right: 20px; color: #fff; font-size: 24px; cursor: pointer; }
-
-        .modal-content { width: 92%; max-width: 450px; background: #fff; border-radius: 15px; overflow: hidden; }
+        /* 全屏查看器及弹窗 */
+        .overlay { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); flex-direction: column; align-items: center; justify-content: center; }
+        .overlay-close { position: absolute; top: 40px; right: 25px; color: #fff; font-size: 32px; font-weight: 300; cursor: pointer; z-index: 10001; padding: 10px; }
+        #viewer-counter { position: absolute; top: 50px; left: 25px; color: rgba(255,255,255,0.6); font-size: 14px; font-weight: 600; z-index: 10001; }
+        
+        .modal-content { width: 92%; max-width: 450px; background: #fff; border-radius: 15px; overflow: hidden; position: relative; }
         .modal-content img { width: 100%; display: block; }
 
         .fab-group { position: fixed; bottom: 25px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; }
@@ -97,24 +81,23 @@
 </head>
 <body>
 
-<!-- Size 表弹窗：已更正为本地路径 + 地道英文翻译 -->
+<!-- 尺码表弹窗 -->
 <div id="size-guide-modal" class="overlay" onclick="this.style.display='none'">
     <div class="overlay-close">✕</div>
     <div class="modal-content" onclick="event.stopPropagation()">
-        <div style="padding:15px; font-weight:900; text-align:center; border-bottom:1px solid #eee; color:#000; font-size: 16px;">NIKE SIZE CHART</div>
-        <!-- 请确保你的图片文件名叫 size-guide.jpg 并上传到根目录 -->
+        <div style="padding:15px; font-weight:900; text-align:center; border-bottom:1px solid #eee; color:#000;">NIKE SIZE CHART</div>
         <img src="size-guide.jpg" alt="Size Guide">
-        <div style="padding:18px; font-size:13px; color:#e41e31; text-align:center; font-weight: 800; background: #fff0f0; line-height: 1.4;">
-            💡 TIP: If you have wide feet, we recommend going up at least half a size.
+        <div style="padding:15px; font-size:12px; color:#e41e31; text-align:center; font-weight: 800; background: #fff0f0;">
+            💡 TIP: If you have wide feet, we recommend going up 0.5 size.
         </div>
     </div>
 </div>
 
 <!-- 图片全屏查看器 -->
-<div id="viewer-overlay" class="overlay">
-    <div class="overlay-close" onclick="document.getElementById('viewer-overlay').style.display='none'; document.body.style.overflow='auto';">✕</div>
-    <div id="viewer-counter" style="position:absolute; top:45px; left:20px; color:#fff; font-size:14px; font-weight:700;">1 / 4</div>
-    <div class="swiper swiper-viewer" style="width: 100%; height: 100%;">
+<div id="viewer-overlay" class="overlay" onclick="closeViewer()">
+    <div class="overlay-close" onclick="closeViewer()">✕</div>
+    <div id="viewer-counter">1 / 4</div>
+    <div class="swiper swiper-viewer" style="width: 100%; height: 80%;" onclick="event.stopPropagation()">
         <div class="swiper-wrapper"></div>
     </div>
 </div>
@@ -122,30 +105,24 @@
 <div class="sticky-header">
     <div class="header">
         <div class="online-status"><div class="online-dot"></div> SERVICE ONLINE</div>
-        <!-- Logo 及其下方文字都会在这里自动变色 -->
         <img src="images/logo.png" alt="Logo" id="shop-logo">
     </div>
     <div class="trust-bar">
-        <span>✓ LJR Batch</span>
-        <span>✓ QC Support</span>
-        <span>✓ Free Shipping</span>
-        <span>✓ Global Express</span>
+        <span>✓ LJR Batch</span><span>✓ QC Support</span><span>✓ Free Shipping</span>
     </div>
     <div class="search-container">
-        <input type="text" id="search-input" placeholder="Find your sneakers...">
+        <input type="text" id="search-input" placeholder="Search sneakers...">
     </div>
     <div class="category-nav" id="cat-nav"></div>
 </div>
 
 <div class="container">
     <div id="product-list"></div>
-    <div style="text-align:center; padding:20px; font-size:11px; color:var(--text-muted); letter-spacing:1px;">
-        CATALOG UPDATED: <span id="current-date"></span><br>
-        © 2026 LJR PREMIUM EXCLUSIVE
+    <div style="text-align:center; padding:20px; font-size:11px; color:var(--text-muted);">
+        CATALOG UPDATED: <span id="current-date"></span><br>© 2026 LJR PREMIUM EXCLUSIVE
     </div>
 </div>
 
-<!-- 悬浮按钮组 -->
 <div class="fab-group">
     <div class="fab" onclick="document.getElementById('size-guide-modal').style.display='flex'">SIZE</div>
     <a href="https://wa.me/8618506001902" class="fab fab-whatsapp" target="_blank">
@@ -154,12 +131,11 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
 <script>
     document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'});
     const myPhone = "8618506001902";
     
-    // 产品数据库
+    // 产品数据（保持不变）
     const products = [
         { name: "Air Jordan 4 'Black Cat'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 _Black Cat", tag: "HOT" },
         { name: "Air Jordan 4 'Laser'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 _Laser" },
@@ -215,9 +191,6 @@
         filtered.forEach((p, pIdx) => {
             const card = document.createElement('div');
             card.className = 'product-card';
-            const waInquiryMsg = encodeURIComponent(`Hi! I'm interested in:\n👟 *${p.name}*\n💰 *${p.price}*\nPlease check stock for me.`);
-            const waQCMsg = encodeURIComponent(`Hi! Can you send me the QC video/photos for:\n👟 *${p.name}*?`);
-
             card.innerHTML = `
                 <div class="swiper swiper-list-${pIdx}">
                     ${p.tag ? `<div class="badge">${p.tag}</div>` : ''}
@@ -229,9 +202,15 @@
                 <div class="product-info">
                     <div class="product-title">${p.name}</div>
                     <div class="product-price">${p.price}</div>
+                    <!-- 重新加回的服务标签 -->
+                    <div class="product-services">
+                        <span class="service-tag">✓ LJR Batch</span>
+                        <span class="service-tag">✓ Best QC</span>
+                        <span class="service-tag">✓ Global Ship</span>
+                    </div>
                     <div class="btn-group">
-                        <a href="https://wa.me/${myPhone}?text=${waInquiryMsg}" target="_blank" class="order-btn">Inquiry Now</a>
-                        <a href="https://wa.me/${myPhone}?text=${waQCMsg}" target="_blank" class="qc-btn">QC Video</a>
+                        <a href="https://wa.me/${myPhone}?text=Inquiry: ${p.name}" class="order-btn" target="_blank">Inquiry Now</a>
+                        <a href="https://wa.me/${myPhone}?text=QC Video: ${p.name}" class="qc-btn" target="_blank">QC Video</a>
                     </div>
                 </div>
             `;
@@ -243,18 +222,21 @@
     window.openViewer = (folder, startIndex) => {
         const overlay = document.getElementById('viewer-overlay');
         const wrapper = document.querySelector('.swiper-viewer .swiper-wrapper');
-        wrapper.innerHTML = [1,2,3,4].map(i => `<div class="swiper-slide"><img src="images/${folder}/${i}.jpg" style="max-width:100%; max-height:100%; object-fit:contain;"></div>`).join('');
+        wrapper.innerHTML = [1,2,3,4].map(i => `<div class="swiper-slide" style="display:flex; align-items:center; justify-content:center;"><img src="images/${folder}/${i}.jpg" style="max-width:100%; max-height:100%; object-fit:contain;"></div>`).join('');
         overlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
         if(viewerSwiper) viewerSwiper.destroy(true, true);
         viewerSwiper = new Swiper('.swiper-viewer', { initialSlide: startIndex, on: { slideChange: function() { document.getElementById('viewer-counter').innerText = `${this.activeIndex + 1} / 4`; } } });
     };
 
+    window.closeViewer = () => {
+        document.getElementById('viewer-overlay').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    };
+
     document.getElementById('search-input').addEventListener('input', (e) => { searchQuery = e.target.value; render(); });
     window.filterCat = (cat) => { currentCategory = cat; updateNav(); render(); };
-
-    updateNav();
-    render();
+    updateNav(); render();
 </script>
 </body>
 </html>
