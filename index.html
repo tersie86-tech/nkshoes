@@ -9,18 +9,17 @@
         :root { 
             --main-color: #000; --accent-color: #e41e31; --bg-gray: #f2f2f2; 
             --text-main: #111; --text-muted: #666; --card-bg: #fff;
-            --safe-top: env(safe-area-inset-top);
         }
 
-        /* 深色模式适配 */
+        /* 🌙 深色模式自动适配逻辑 */
         @media (prefers-color-scheme: dark) {
             :root { --bg-gray: #0a0a0a; --text-main: #f5f5f5; --text-muted: #888; --card-bg: #151515; }
             body { background-color: #000; }
             .sticky-header { background: rgba(0, 0, 0, 0.85) !important; border-bottom-color: #222 !important; }
             
-            /* 关键修复：让黑色 Logo 在深色模式下变白 */
+            /* 关键：让黑色的 Logo 和其中的小字在黑背景下反转成白色 */
             #shop-logo { 
-                filter: invert(1) brightness(1.5); 
+                filter: invert(1) brightness(1.8); 
                 mix-blend-mode: normal !important; 
             }
             
@@ -88,9 +87,6 @@
         .modal-content { width: 92%; max-width: 450px; background: #fff; border-radius: 15px; overflow: hidden; }
         .modal-content img { width: 100%; display: block; }
 
-        .swiper-viewer { width: 100%; height: 100%; }
-        .swiper-viewer img { max-width: 100%; max-height: 100%; object-fit: contain; }
-
         .fab-group { position: fixed; bottom: 25px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; }
         .fab { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); border: none; cursor: pointer; background: #fff; font-weight: 900; font-size: 12px; color:#000; }
         .fab-whatsapp { background: #25D366; }
@@ -101,12 +97,12 @@
 </head>
 <body>
 
-<!-- Size 表弹窗 -->
+<!-- Size 表弹窗：已更正为本地路径 + 地道英文翻译 -->
 <div id="size-guide-modal" class="overlay" onclick="this.style.display='none'">
     <div class="overlay-close">✕</div>
     <div class="modal-content" onclick="event.stopPropagation()">
         <div style="padding:15px; font-weight:900; text-align:center; border-bottom:1px solid #eee; color:#000; font-size: 16px;">NIKE SIZE CHART</div>
-        <!-- 请确保图片上传后命名为 size-guide.jpg -->
+        <!-- 请确保你的图片文件名叫 size-guide.jpg 并上传到根目录 -->
         <img src="size-guide.jpg" alt="Size Guide">
         <div style="padding:18px; font-size:13px; color:#e41e31; text-align:center; font-weight: 800; background: #fff0f0; line-height: 1.4;">
             💡 TIP: If you have wide feet, we recommend going up at least half a size.
@@ -118,7 +114,7 @@
 <div id="viewer-overlay" class="overlay">
     <div class="overlay-close" onclick="document.getElementById('viewer-overlay').style.display='none'; document.body.style.overflow='auto';">✕</div>
     <div id="viewer-counter" style="position:absolute; top:45px; left:20px; color:#fff; font-size:14px; font-weight:700;">1 / 4</div>
-    <div class="swiper swiper-viewer">
+    <div class="swiper swiper-viewer" style="width: 100%; height: 100%;">
         <div class="swiper-wrapper"></div>
     </div>
 </div>
@@ -126,6 +122,7 @@
 <div class="sticky-header">
     <div class="header">
         <div class="online-status"><div class="online-dot"></div> SERVICE ONLINE</div>
+        <!-- Logo 及其下方文字都会在这里自动变色 -->
         <img src="images/logo.png" alt="Logo" id="shop-logo">
     </div>
     <div class="trust-bar">
@@ -148,6 +145,7 @@
     </div>
 </div>
 
+<!-- 悬浮按钮组 -->
 <div class="fab-group">
     <div class="fab" onclick="document.getElementById('size-guide-modal').style.display='flex'">SIZE</div>
     <a href="https://wa.me/8618506001902" class="fab fab-whatsapp" target="_blank">
@@ -161,6 +159,7 @@
     document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'});
     const myPhone = "8618506001902";
     
+    // 产品数据库
     const products = [
         { name: "Air Jordan 4 'Black Cat'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 _Black Cat", tag: "HOT" },
         { name: "Air Jordan 4 'Laser'", price: "$199.00", category: "Jordan", folder: "Air Jordan 4 _Laser" },
@@ -244,7 +243,7 @@
     window.openViewer = (folder, startIndex) => {
         const overlay = document.getElementById('viewer-overlay');
         const wrapper = document.querySelector('.swiper-viewer .swiper-wrapper');
-        wrapper.innerHTML = [1,2,3,4].map(i => `<div class="swiper-slide"><img src="images/${folder}/${i}.jpg"></div>`).join('');
+        wrapper.innerHTML = [1,2,3,4].map(i => `<div class="swiper-slide"><img src="images/${folder}/${i}.jpg" style="max-width:100%; max-height:100%; object-fit:contain;"></div>`).join('');
         overlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
         if(viewerSwiper) viewerSwiper.destroy(true, true);
