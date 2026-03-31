@@ -11,6 +11,7 @@
             --text-main: #111; --text-muted: #666; --card-bg: #fff;
         }
 
+        /* 深色模式及 Logo 反色 */
         @media (prefers-color-scheme: dark) {
             :root { --bg-gray: #0a0a0a; --text-main: #f5f5f5; --text-muted: #888; --card-bg: #151515; }
             body { background-color: #000; }
@@ -38,7 +39,7 @@
         .nav-item.active { color: #fff; background: #000; border-color: #000; }
 
         .container { max-width: 500px; margin: 0 auto; padding: 10px 16px 100px; }
-        .product-card { background: var(--card-bg); margin-bottom: 25px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); overflow: hidden; animation: fadeIn 0.5s ease both; }
+        .product-card { background: var(--card-bg); margin-bottom: 25px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); overflow: hidden; }
         
         .swiper-list { width: 100%; aspect-ratio: 1/1; position: relative; }
         .swiper-slide img { width: 100%; height: 100%; object-fit: cover; }
@@ -49,9 +50,12 @@
         .product-title { font-size: 16px; font-weight: 800; margin-bottom: 4px; line-height: 1.3; }
         .product-price { color: var(--accent-color); font-size: 20px; font-weight: 900; margin-bottom: 8px; }
         
+        /* 完善服务标签样式 */
         .product-services { display: flex; gap: 6px; margin-bottom: 15px; flex-wrap: wrap; }
         .service-tag { font-size: 9px; color: #25D366; font-weight: 700; background: rgba(37, 211, 102, 0.1); padding: 2px 6px; border-radius: 4px; }
-        .sold-tag { font-size: 10px; color: #ff9800; font-weight: 800; background: rgba(255, 152, 0, 0.1); padding: 2px 6px; border-radius: 4px; }
+        .delivery-tag { font-size: 9px; color: #2196F3; font-weight: 700; background: rgba(33, 150, 243, 0.1); padding: 2px 6px; border-radius: 4px; }
+        .shipping-tag { font-size: 9px; color: #9C27B0; font-weight: 700; background: rgba(156, 39, 176, 0.1); padding: 2px 6px; border-radius: 4px; }
+        .sold-tag { font-size: 9px; color: #ff9800; font-weight: 800; background: rgba(255, 152, 0, 0.1); padding: 2px 6px; border-radius: 4px; }
 
         .btn-group { display: flex; gap: 8px; }
         .order-btn { flex: 2; background: #000; color: #fff; text-decoration: none; padding: 14px; font-size: 13px; font-weight: 800; border-radius: 10px; text-align: center; }
@@ -61,23 +65,24 @@
         .overlay-close { position: absolute; top: 40px; right: 25px; color: #fff; font-size: 32px; cursor: pointer; z-index: 10001; padding: 10px; }
         #viewer-counter { position: absolute; top: 50px; left: 25px; color: #fff; font-size: 14px; font-weight: 600; z-index: 10001; }
         
+        /* 放大器图片初始不放大的关键 */
+        .swiper-zoom-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
         .fab-group { position: fixed; bottom: 25px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; }
         .fab { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); background: #fff; font-weight: 900; font-size: 12px; color:#000; cursor: pointer; border:none; }
 
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-<!-- 尺码表：已补回红色提示字 -->
+<!-- 尺码表：红色提示字已补全 -->
 <div id="size-guide-modal" class="overlay" onclick="this.style.display='none'">
     <div class="overlay-close">✕</div>
-    <div class="modal-content" onclick="event.stopPropagation()" style="width: 92%; max-width: 450px; background: #fff; border-radius: 15px; overflow: hidden; position: relative;">
+    <div class="modal-content" onclick="event.stopPropagation()" style="width: 92%; max-width: 450px; background: #fff; border-radius: 15px; overflow: hidden;">
         <div style="padding:15px; font-weight:900; text-align:center; border-bottom:1px solid #eee; color:#000;">NIKE SIZE CHART</div>
-        <!-- 补回的红色提示文字 -->
-        <div style="background: #fff; color: #e41e31; font-size: 11px; font-weight: 800; text-align: center; padding: 8px 5px;">
-            ※ Please measure your foot length for the most accurate fit.
+        <div style="background: #fff; color: #e41e31; font-size: 11px; font-weight: 800; text-align: center; padding: 10px 5px;">
+            ※ PLEASE MEASURE YOUR FOOT LENGTH FOR THE MOST ACCURATE FIT.
         </div>
         <img src="size-guide.jpg" alt="Size Guide" style="width:100%; display: block;">
     </div>
@@ -180,10 +185,7 @@
                 <div class="swiper swiper-list-${pIdx}">
                     ${p.tag ? `<div class="badge">${p.tag}</div>` : ''}
                     <div class="swiper-wrapper">
-                        ${[1,2,3,4].map(i => `
-                            <div class="swiper-slide">
-                                <img src="images/${p.folder}/${i}.jpg" loading="lazy" onclick="openViewer('${p.folder}', ${i-1})">
-                            </div>`).join('')}
+                        ${[1,2,3,4].map(i => `<div class="swiper-slide"><img src="images/${p.folder}/${i}.jpg" loading="lazy" onclick="openViewer('${p.folder}', ${i-1})"></div>`).join('')}
                     </div>
                     <div class="img-counter">1 / 4</div>
                 </div>
@@ -191,7 +193,10 @@
                     <div class="product-title">${p.name}</div>
                     <div class="product-price">${p.price}</div>
                     <div class="product-services">
-                        <span class="service-tag">✓ 7-Day Returns</span><span class="sold-tag">Sold: ${getRandomSold()}</span>
+                        <span class="service-tag">✓ 7-Day Returns</span>
+                        <span class="delivery-tag">✓ 3-7 Days Delivery</span>
+                        <span class="shipping-tag">✓ Free Shipping</span>
+                        <span class="sold-tag">Sold: ${getRandomSold()}</span>
                     </div>
                     <div class="btn-group">
                         <a href="https://wa.me/${myPhone}?text=Inquiry: ${p.name}" class="order-btn" target="_blank">Inquiry Now</a>
@@ -206,16 +211,16 @@
         });
     }
 
-    // 手动缩放逻辑：滚轮 & 手指拉伸
     window.openViewer = (folder, startIndex) => {
         const overlay = document.getElementById('viewer-overlay');
         const mount = document.getElementById('viewer-mount');
         
+        // 关键：初始状态下图片以 contain 方式居中显示，不会“自动放大”
         mount.innerHTML = `
             <div class="swiper swiper-viewer" style="width: 100%; height: 100%;">
                 <div class="swiper-wrapper">
                     ${[1,2,3,4].map(i => `
-                        <div class="swiper-slide">
+                        <div class="swiper-slide" style="display:flex; align-items:center; justify-content:center;">
                             <div class="swiper-zoom-container">
                                 <img src="images/${folder}/${i}.jpg">
                             </div>
@@ -230,12 +235,8 @@
         setTimeout(() => {
             vSwiper = new Swiper('.swiper-viewer', {
                 initialSlide: startIndex,
-                zoom: {
-                    maxRatio: 3, // 最大放大3倍
-                    minRatio: 1,
-                    toggle: true, // 支持双击放大/恢复
-                },
-                mousewheel: true, // 支持鼠标滚轮缩放
+                zoom: { maxRatio: 3, minRatio: 1, toggle: true },
+                mousewheel: true,
                 on: { 
                     slideChange: function() { 
                         document.getElementById('viewer-counter').innerText = `${this.activeIndex + 1} / 4`; 
